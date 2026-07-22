@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AetherDown</string>
+    <string name="app_description">Universal Advanced Downloader</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_queue">Queue</string>
+    <string name="nav_history">History</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Home -->
+    <string name="home_title">AetherDown</string>
+    <string name="paste_url">Paste URL here</string>
+    <string name="download">Download</string>
+    <string name="extracting">Extracting…</string>
+    <string name="supported_platforms">Supported Platforms</string>
+    <string name="url_hint">Enter any video, music, or torrent URL to start downloading</string>
+    <string name="clipboard_detected">URL detected in clipboard</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="url_label">URL</string>
+    <string name="url_placeholder">https://example.com/video</string>
+    <string name="clear">Clear</string>
+    <string name="extract_streams">Extract Streams</string>
+    <string name="download_added_to_queue">Download added to queue!</string>
+    <string name="extraction_available">Audio and Video Extraction Available on:</string>
+    <string name="select_format">Select Format</string>
+    <string name="no_streams_found">No streams found. Try direct download.</string>
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="direct_download">Direct Download</string>
+    <string name="cancel">Cancel</string>
+    <string name="adding_to_queue">Adding to queue...</string>
+    <string name="download_started">Download started: %1$s</string>
+    <string name="download_failed">Download failed: %1$s</string>
+    <string name="error">Error: %1$s</string>
+    <string name="url_is_empty">URL is empty</string>
+    <string name="starting_download">Starting download...</string>
+    <string name="download_queued">Download added to queue</string>
+
+    <!-- Platforms -->
+    <string name="platform_youtube">YouTube</string>
+    <string name="platform_tiktok">TikTok</string>
+    <string name="platform_instagram">Instagram</string>
+    <string name="platform_twitter">Twitter/X</string>
+    <string name="platform_soundcloud">SoundCloud</string>
+    <string name="platform_reddit">Reddit</string>
+
+    <!-- Queue -->
+    <string name="queue_title">Queue</string>
+    <string name="no_downloads">No downloads yet</string>
+    <string name="no_downloads_hint">Paste a URL on the Home tab to start</string>
+    <string name="downloading">Downloading</string>
+    <string name="completed">Completed</string>
+    <string name="failed">Failed</string>
+    <string name="paused">Paused</string>
+    <string name="pending">Pending</string>
+    <string name="queued">Queued</string>
+    <string name="verifying">Verifying</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="delete">Delete</string>
+    <string name="retry">Retry</string>
+
+    <!-- History -->
+    <string name="history_title">History</string>
+    <string name="search_history">Search history…</string>
+    <string name="no_history">No history found</string>
+    <string name="clear_all">Clear all</string>
+    <string name="all">All</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_download">Download</string>
+    <string name="settings_network">Network</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_privacy">Privacy</string>
+    <string name="settings_organization">Organization</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_clipboard">Clipboard</string>
+    <string name="settings_language">Language</string>
+
+    <string name="max_concurrent_downloads">Max concurrent downloads</string>
+    <string name="max_concurrent_downloads_subtitle">%1$d at once</string>
+    <string name="max_connections">Max connections per download</string>
+    <string name="max_connections_subtitle">%1$d connections</string>
+    <string name="wifi_only">Wi-Fi only</string>
+    <string name="wifi_only_desc">Only download on Wi-Fi networks</string>
+    <string name="allow_roaming">Allow roaming</string>
+    <string name="allow_roaming_desc">Download while roaming</string>
+    <string name="metered_networks">Metered networks</string>
+    <string name="metered_networks_desc">Allow download on metered connections</string>
+    <string name="only_on_charger">Only on charger</string>
+    <string name="only_on_charger_desc">Pause downloads when not charging</string>
+    <string name="theme">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_system">System</string>
+    <string name="dynamic_colors">Dynamic colors</string>
+    <string name="dynamic_colors_desc">Use Material You dynamic colors (Android 12+)</string>
+    <string name="incognito_mode">Incognito mode</string>
+    <string name="incognito_desc">Don\'t save download history</string>
+    <string name="organize_by_platform">Organize by platform</string>
+    <string name="organize_by_platform_desc">Save files in platform-specific folders</string>
+    <string name="auto_detect_urls">Auto-detect URLs</string>
+    <string name="auto_detect_urls_desc">Automatically check clipboard for URLs</string>
+    <string name="show_progress">Show progress</string>
+    <string name="show_progress_desc">Show download progress in notifications</string>
+    <string name="completion_alerts">Completion alerts</string>
+    <string name="completion_alerts_desc">Show notification when download completes</string>
+    <string name="language_system_default">System default</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_french">Français</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+
+    <!-- Disclaimer -->
+    <string name="disclaimer_title">Legal Disclaimer</string>
+    <string name="disclaimer_message"><![CDATA[
+AetherDown is a general-purpose download tool. Users are solely responsible for ensuring they have the legal right to download and use any content accessed through this application.
+
+The developers do not condone piracy, copyright infringement, or any illegal use of this software. This application does not host, store, or distribute any copyrighted content.
+
+Downloading copyrighted material without permission may violate applicable laws in your jurisdiction. Use at your own risk.
+]]></string>
+
+    <!-- App version -->
+    <string name="app_version">AetherDown v2.0.0</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Downloads</string>
+    <string name="notification_channel_desc">Active download notifications</string>
+    <string name="notification_downloading">Downloading…</string>
+    <string name="notification_preparing">Preparing…</string>
+    <string name="notification_download_complete">Download complete</string>
+
+    <!-- Format units -->
+    <string name="unit_gb">GB</string>
+    <string name="unit_mb">MB</string>
+    <string name="unit_kb">KB</string>
+    <string name="unit_b">B</string>
+    <string name="unit_mbps">MB/s</string>
+    <string name="unit_kbps">KB/s</string>
+    <string name="unit_bps">B/s</string>
+    <string name="unit_0_bps">0 B/s</string>
+    <string name="unit_hours">h</string>
+    <string name="unit_minutes">m</string>
+    <string name="unit_seconds">s</string>
+</resources>

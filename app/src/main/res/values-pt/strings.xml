@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AetherDown</string>
+    <string name="app_description">Download Universal Avançado</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Início</string>
+    <string name="nav_queue">Fila</string>
+    <string name="nav_history">Histórico</string>
+    <string name="nav_settings">Configurações</string>
+
+    <!-- Home -->
+    <string name="home_title">AetherDown</string>
+    <string name="paste_url">Cole a URL aqui</string>
+    <string name="download">Baixar</string>
+    <string name="extracting">Extraindo…</string>
+    <string name="supported_platforms">Plataformas Suportadas</string>
+    <string name="url_hint">Insira qualquer URL de vídeo, música ou torrent para começar a baixar</string>
+    <string name="clipboard_detected">URL detectada na área de transferência</string>
+    <string name="dismiss">Dispensar</string>
+    <string name="url_label">URL</string>
+    <string name="url_placeholder">https://example.com/video</string>
+    <string name="clear">Limpar</string>
+    <string name="extract_streams">Extrair Streams</string>
+    <string name="download_added_to_queue">Download adicionado à fila!</string>
+    <string name="extraction_available">Extração de Áudio e Vídeo Disponível em:</string>
+    <string name="select_format">Selecionar Formato</string>
+    <string name="no_streams_found">Nenhum stream encontrado. Tente download direto.</string>
+    <string name="video">Vídeo</string>
+    <string name="audio">Áudio</string>
+    <string name="direct_download">Download Direto</string>
+    <string name="cancel">Cancelar</string>
+    <string name="adding_to_queue">Adicionando à fila…</string>
+    <string name="download_started">Download iniciado: %1$s</string>
+    <string name="download_failed">Download falhou: %1$s</string>
+    <string name="error">Erro: %1$s</string>
+    <string name="url_is_empty">URL está vazia</string>
+    <string name="starting_download">Iniciando download…</string>
+    <string name="download_queued">Download adicionado à fila</string>
+
+    <!-- Platforms -->
+    <string name="platform_youtube">YouTube</string>
+    <string name="platform_tiktok">TikTok</string>
+    <string name="platform_instagram">Instagram</string>
+    <string name="platform_twitter">Twitter/X</string>
+    <string name="platform_soundcloud">SoundCloud</string>
+    <string name="platform_reddit">Reddit</string>
+
+    <!-- Queue -->
+    <string name="queue_title">Fila</string>
+    <string name="no_downloads">Nenhum download ainda</string>
+    <string name="no_downloads_hint">Cole uma URL na aba Início para começar</string>
+    <string name="downloading">Baixando</string>
+    <string name="completed">Concluído</string>
+    <string name="failed">Falhou</string>
+    <string name="paused">Pausado</string>
+    <string name="pending">Pendente</string>
+    <string name="queued">Na fila</string>
+    <string name="verifying">Verificando</string>
+    <string name="pause">Pausar</string>
+    <string name="resume">Retomar</string>
+    <string name="delete">Excluir</string>
+    <string name="retry">Tentar novamente</string>
+
+    <!-- History -->
+    <string name="history_title">Histórico</string>
+    <string name="search_history">Pesquisar histórico…</string>
+    <string name="no_history">Nenhum histórico encontrado</string>
+    <string name="clear_all">Limpar tudo</string>
+    <string name="all">Todos</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Configurações</string>
+    <string name="settings_download">Download</string>
+    <string name="settings_network">Rede</string>
+    <string name="settings_appearance">Aparência</string>
+    <string name="settings_privacy">Privacidade</string>
+    <string name="settings_organization">Organização</string>
+    <string name="settings_notifications">Notificações</string>
+    <string name="settings_clipboard">Área de Transferência</string>
+    <string name="settings_language">Idioma</string>
+
+    <string name="max_concurrent_downloads">Downloads simultâneos máximos</string>
+    <string name="max_concurrent_downloads_subtitle">%1$d de cada vez</string>
+    <string name="max_connections">Conexões máximas por download</string>
+    <string name="max_connections_subtitle">%1$d conexões</string>
+    <string name="wifi_only">Apenas Wi-Fi</string>
+    <string name="wifi_only_desc">Baixar apenas em redes Wi-Fi</string>
+    <string name="allow_roaming">Permitir roaming</string>
+    <string name="allow_roaming_desc">Baixar durante roaming</string>
+    <string name="metered_networks">Redes medidas</string>
+    <string name="metered_networks_desc">Permitir download em conexões medidas</string>
+    <string name="only_on_charger">Apenas no carregador</string>
+    <string name="only_on_charger_desc">Pausar downloads quando não estiver carregando</string>
+    <string name="theme">Tema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Escuro</string>
+    <string name="theme_system">Sistema</string>
+    <string name="dynamic_colors">Cores dinâmicas</string>
+    <string name="dynamic_colors_desc">Usar cores dinâmicas do Material You (Android 12+)</string>
+    <string name="incognito_mode">Modo anônimo</string>
+    <string name="incognito_desc">Não salvar histórico de downloads</string>
+    <string name="organize_by_platform">Organizar por plataforma</string>
+    <string name="organize_by_platform_desc">Salvar arquivos em pastas específicas da plataforma</string>
+    <string name="auto_detect_urls">Detectar URLs automaticamente</string>
+    <string name="auto_detect_urls_desc">Verificar automaticamente a área de transferência por URLs</string>
+    <string name="show_progress">Mostrar progresso</string>
+    <string name="show_progress_desc">Mostrar progresso do download nas notificações</string>
+    <string name="completion_alerts">Alertas de conclusão</string>
+    <string name="completion_alerts_desc">Mostrar notificação quando o download for concluído</string>
+    <string name="language_system_default">Padrão do sistema</string>
+    <string name="language_english">English</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_french">Français</string>
+    <string name="language_german">Deutsch</string>
+    <string name="language_italian">Italiano</string>
+    <string name="language_portuguese">Português</string>
+
+    <!-- Disclaimer -->
+    <string name="disclaimer_title">Aviso Legal</string>
+    <string name="disclaimer_message"><![CDATA[
+AetherDown é uma ferramenta de download de propósito geral. Os usuários são os únicos responsáveis por garantir que têm o direito legal de baixar e usar qualquer conteúdo acessado através deste aplicativo.
+
+Os desenvolvedores não aprovam pirataria, violação de direitos autorais ou qualquer uso ilegal deste software. Este aplicativo não hospeda, armazena ou distribui nenhum conteúdo protegido por direitos autorais.
+
+Baixar material protegido por direitos autorais sem permissão pode violar as leis aplicáveis em sua jurisdição. Use por sua conta e risco.
+]]></string>
+
+    <!-- App version -->
+    <string name="app_version">AetherDown v2.0.0</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Downloads</string>
+    <string name="notification_channel_desc">Notificações de download ativo</string>
+    <string name="notification_downloading">Baixando…</string>
+    <string name="notification_preparing">Preparando…</string>
+    <string name="notification_download_complete">Download concluído</string>
+
+    <!-- Format units -->
+    <string name="unit_gb">GB</string>
+    <string name="unit_mb">MB</string>
+    <string name="unit_kb">KB</string>
+    <string name="unit_b">B</string>
+    <string name="unit_mbps">MB/s</string>
+    <string name="unit_kbps">KB/s</string>
+    <string name="unit_bps">B/s</string>
+    <string name="unit_0_bps">0 B/s</string>
+    <string name="unit_hours">h</string>
+    <string name="unit_minutes">m</string>
+    <string name="unit_seconds">s</string>
+</resources>
