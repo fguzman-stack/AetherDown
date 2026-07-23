@@ -1,5 +1,7 @@
 package com.aetherdown.app.di
 
+import com.aetherdown.app.download.SimpleDownloader
+import com.aetherdown.app.domain.repository.MediaDownloadGateway
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,14 +28,13 @@ object NetworkModule {
             .writeTimeout(60, TimeUnit.SECONDS)
             .followRedirects(true)
             .followSslRedirects(true)
-            .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-                    .header("User-Agent", "Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36")
-                    .header("Accept", "*/*")
-                    .build()
-                chain.proceed(request)
-            }
             .addInterceptor(logging)
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideMediaDownloadGateway(
+        impl: SimpleDownloader
+    ): MediaDownloadGateway = impl
 }

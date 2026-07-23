@@ -13,15 +13,19 @@ data class ExtractResult(
 )
 
 data class StreamInfo(
+    val formatId: String = "",
     val url: String,
     val quality: String,
     val format: String,
-    val mimeType: String,
-    val fileSize: Long = 0L,
+    val mimeType: String? = null,
+    val fileSize: Long? = null,
     val isAudio: Boolean = false,
-    val isVideo: Boolean = true,
+    val hasVideo: Boolean = true,
+    val hasAudio: Boolean = false,
     val bitrate: Int = 0,
     val height: Int = 0,
     val width: Int = 0,
     val httpHeaders: Map<String, String> = emptyMap()
-)
+) {
+    val isVideo get() = hasVideo
+}

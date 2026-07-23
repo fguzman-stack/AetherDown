@@ -1,157 +1,136 @@
 package com.aetherdown.app.presentation.settings
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aetherdown.app.domain.model.AppSettings
 import com.aetherdown.app.domain.model.Language
 import com.aetherdown.app.domain.model.ThemeMode
-import com.aetherdown.app.domain.usecase.GetSettingsUseCase
-import com.aetherdown.app.domain.usecase.UpdateSettingsUseCase
+import com.aetherdown.app.domain.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val getSettingsUseCase: GetSettingsUseCase,
-    private val updateSettingsUseCase: UpdateSettingsUseCase
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
-    data class UiState(
-        val settings: AppSettings = AppSettings(),
-        val isLoading: Boolean = true
-    )
-
-    private val _uiState = MutableStateFlow(UiState())
-    val uiState: StateFlow<UiState> = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            getSettingsUseCase.getSettings().collect { settings ->
-                _uiState.value = UiState(settings = settings, isLoading = false)
-            }
-        }
-    }
+    val settings: StateFlow<AppSettings> = settingsRepository.settings
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            AppSettings()
+        )
 
     fun updateMaxConcurrentDownloads(max: Int) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(maxConcurrentDownloads = max)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateMaxConcurrentDownloads(max)
         }
     }
 
     fun updateDefaultMaxConnections(max: Int) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(defaultMaxConnections = max)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateDefaultMaxConnections(max)
         }
     }
 
     fun updateDefaultSpeedLimit(limit: Long) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(defaultSpeedLimit = limit)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateDefaultSpeedLimit(limit)
         }
     }
 
     fun updateWifiOnly(wifiOnly: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(wifiOnly = wifiOnly)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateWifiOnly(wifiOnly)
         }
     }
 
     fun updateRoamingAllowed(allowed: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(roamingAllowed = allowed)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateRoamingAllowed(allowed)
         }
     }
 
     fun updateMeteredNetworkAllowed(allowed: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(meteredNetworkAllowed = allowed)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateMeteredNetworkAllowed(allowed)
         }
     }
 
     fun updateOnlyOnCharging(onlyCharging: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(onlyOnCharging = onlyCharging)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateOnlyOnCharging(onlyCharging)
         }
     }
 
     fun updateAutoExtractClipboard(enabled: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(autoExtractClipboard = enabled)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateAutoExtractClipboard(enabled)
         }
     }
 
     fun updateIncognitoMode(enabled: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(incognitoMode = enabled)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateIncognitoMode(enabled)
         }
     }
 
     fun updateThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(darkTheme = mode)
-            updateSettingsUseCase(updated)
-            kotlinx.coroutines.delay(100)
-            _recreateApp.emit(Unit)
+            settingsRepository.updateDarkTheme(mode.name)
         }
     }
 
     fun updateUseDynamicColors(enabled: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(useDynamicColors = enabled)
-            updateSettingsUseCase(updated)
-            kotlinx.coroutines.delay(100)
-            _recreateApp.emit(Unit)
+            settingsRepository.updateUseDynamicColors(enabled)
         }
     }
 
     fun updateOrganizeByPlatform(enabled: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(organizeByPlatform = enabled)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateOrganizeByPlatform(enabled)
         }
     }
 
     fun updateDeleteOriginalAfterConversion(enabled: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(deleteOriginalAfterConversion = enabled)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateDeleteOriginalAfterConversion(enabled)
         }
     }
 
     fun updateNotificationProgress(enabled: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(notificationProgress = enabled)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateNotificationProgress(enabled)
         }
     }
 
     fun updateCompletedNotification(enabled: Boolean) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(completedNotification = enabled)
-            updateSettingsUseCase(updated)
+            settingsRepository.updateCompletedNotification(enabled)
         }
     }
 
-    private val _recreateApp = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
-    val recreateApp: SharedFlow<Unit> = _recreateApp.asSharedFlow()
-
     fun updateLanguage(language: Language) {
         viewModelScope.launch {
-            val updated = _uiState.value.settings.copy(language = language)
-            updateSettingsUseCase(updated)
-            kotlinx.coroutines.delay(200)
-            _recreateApp.emit(Unit)
+            settingsRepository.updateLanguage(language.code)
+
+            val locales = when (language) {
+                Language.SYSTEM -> LocaleListCompat.getEmptyLocaleList()
+                else -> LocaleListCompat.forLanguageTags(language.code)
+            }
+
+            withContext(Dispatchers.Main.immediate) {
+                AppCompatDelegate.setApplicationLocales(locales)
+            }
         }
     }
 }

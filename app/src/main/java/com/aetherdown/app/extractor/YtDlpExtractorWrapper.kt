@@ -5,7 +5,6 @@ import com.aetherdown.app.domain.model.ExtractionError
 import com.aetherdown.app.domain.model.StreamInfo
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
-import com.yausername.youtubedl_android.mapper.VideoFormat
 import com.yausername.youtubedl_android.mapper.VideoInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,8 +24,8 @@ class YtDlpExtractorWrapper @Inject constructor() : Extractor {
     override suspend fun extract(url: String): Result<ExtractResult> = withContext(Dispatchers.IO) {
         try {
             val info = YoutubeDL.getInstance().getInfo(url)
-            val streams = buildStreams(info)
             val detectedPlatform = detectPlatform(info.webpageUrl ?: url)
+            val streams = buildStreams(info, detectedPlatform)
 
             Result.success(
                 ExtractResult(
@@ -50,9 +49,11 @@ class YtDlpExtractorWrapper @Inject constructor() : Extractor {
         }
     }
 
-    private fun buildStreams(info: VideoInfo): List<StreamInfo> {
+    private fun buildStreams(info: VideoInfo, platform: String): List<StreamInfo> {
         val streams = mutableListOf<StreamInfo>()
         val seenUrls = mutableSetOf<String>()
+        val infoHeaders = info.httpHeaders.orEmpty()
+        val platformHeaders = defaultHeadersFor(platform, info.webpageUrl)
 
         val allFormats = info.formats ?: emptyList()
 
@@ -60,15 +61,18 @@ class YtDlpExtractorWrapper @Inject constructor() : Extractor {
             val streamUrl = fmt.url ?: continue
             if (streamUrl.isBlank() || streamUrl in seenUrls) continue
 
-            val isManifestUrl = streamUrl.contains(".m3u8", ignoreCase = true) ||
-                fmt.manifestUrl != null
-            if (isManifestUrl) continue
+            // Only skip actual playlist/manifest URLs. Do NOT drop progressive
+            // formats that merely reference a parent manifest_url (common on X/Twitter).
+            val isPlaylistOnly = isPlaylistUrl(streamUrl)
+            if (isPlaylistOnly) continue
 
             seenUrls.add(streamUrl)
 
             val hasVideo = !fmt.vcodec.isNullOrBlank() && fmt.vcodec != "none"
             val hasAudio = !fmt.acodec.isNullOrBlank() && fmt.acodec != "none"
             val isAudioOnly = !hasVideo && hasAudio
+            // Twitter/X often omits codec fields on progressive MP4s — treat as A/V.
+            val assumeAv = !hasVideo && !hasAudio && !isPlaylistUrl(streamUrl)
 
             val quality = when {
                 !fmt.formatNote.isNullOrBlank() -> fmt.formatNote ?: ""
@@ -85,41 +89,89 @@ class YtDlpExtractorWrapper @Inject constructor() : Extractor {
             val mimeType = if (isAudioOnly) "audio/$ext" else "video/$ext"
             val fileSize = if (fmt.fileSize > 0) fmt.fileSize else fmt.fileSizeApproximate
 
+            val formatHeaders = fmt.httpHeaders.orEmpty()
+            val mergedHeaders = platformHeaders + infoHeaders + formatHeaders
+
             streams.add(
                 StreamInfo(
+                    formatId = fmt.formatId.orEmpty(),
                     url = streamUrl,
                     quality = quality,
                     format = ext,
                     mimeType = mimeType,
                     fileSize = fileSize,
                     isAudio = isAudioOnly,
-                    isVideo = hasVideo || (!isAudioOnly && hasAudio),
+                    hasVideo = hasVideo || assumeAv,
+                    hasAudio = hasAudio || assumeAv || (hasVideo && !isAudioOnly),
                     bitrate = if (fmt.abr > 0) fmt.abr else fmt.tbr,
                     height = fmt.height,
                     width = fmt.width,
-                    httpHeaders = fmt.httpHeaders ?: emptyMap()
+                    httpHeaders = mergedHeaders
                 )
             )
         }
 
         if (streams.isEmpty()) {
             info.url?.let { directUrl ->
-                if (directUrl.isNotBlank()) {
+                if (directUrl.isNotBlank() && !isPlaylistUrl(directUrl)) {
                     val ext = info.ext ?: "mp4"
                     streams.add(
                         StreamInfo(
+                            formatId = info.formatId.orEmpty(),
                             url = directUrl,
                             quality = "default",
                             format = ext,
                             mimeType = "video/$ext",
-                            isVideo = true
+                            hasVideo = true,
+                            hasAudio = true,
+                            httpHeaders = platformHeaders + infoHeaders
                         )
                     )
                 }
             }
         }
 
-        return streams
+        // Prefer higher resolution / progressive with audio first
+        return streams.sortedWith(
+            compareByDescending<StreamInfo> { it.hasVideo && it.hasAudio }
+                .thenByDescending { it.height }
+                .thenByDescending { it.fileSize ?: 0L }
+        )
+    }
+
+    private fun isPlaylistUrl(url: String): Boolean {
+        val lower = url.lowercase()
+        return lower.contains(".m3u8") ||
+            lower.contains(".mpd") ||
+            lower.contains("manifest") && (lower.contains("m3u8") || lower.contains("mpd"))
+    }
+
+    private fun defaultHeadersFor(platform: String, webpageUrl: String?): Map<String, String> {
+        val page = webpageUrl.orEmpty()
+        return when {
+            platform == "X/Twitter" || page.contains("twitter.com") || page.contains("x.com") -> mapOf(
+                "Referer" to "https://x.com/",
+                "Origin" to "https://x.com",
+                "User-Agent" to BROWSER_UA,
+                "Accept" to "*/*"
+            )
+            platform == "Instagram" || page.contains("instagram.com") -> mapOf(
+                "Referer" to "https://www.instagram.com/",
+                "Origin" to "https://www.instagram.com",
+                "User-Agent" to BROWSER_UA,
+                "Accept" to "*/*"
+            )
+            platform == "TikTok" || page.contains("tiktok.com") -> mapOf(
+                "Referer" to "https://www.tiktok.com/",
+                "Origin" to "https://www.tiktok.com",
+                "User-Agent" to BROWSER_UA,
+                "Accept" to "*/*"
+            )
+            else -> mapOf(
+                "User-Agent" to BROWSER_UA,
+                "Accept" to "*/*"
+            )
+        }
     }
 
     private fun mapYtDlpError(e: YoutubeDLException): ExtractionError {
@@ -129,7 +181,8 @@ class YtDlpExtractorWrapper @Inject constructor() : Extractor {
                 ExtractionError.AgeRestricted
             msg.contains("geo", ignoreCase = true) || msg.contains("region", ignoreCase = true) ->
                 ExtractionError.RegionLocked
-            msg.contains("private", ignoreCase = true) || msg.contains("deleted", ignoreCase = true) || msg.contains("unavailable", ignoreCase = true) || msg.contains("not found", ignoreCase = true) ->
+            msg.contains("private", ignoreCase = true) || msg.contains("deleted", ignoreCase = true) ||
+                msg.contains("unavailable", ignoreCase = true) || msg.contains("not found", ignoreCase = true) ->
                 ExtractionError.Unknown("Content unavailable: $msg")
             msg.contains("unsupported", ignoreCase = true) || msg.contains("not supported", ignoreCase = true) ->
                 ExtractionError.Unknown("This URL is not supported by yt-dlp")
@@ -151,5 +204,10 @@ class YtDlpExtractorWrapper @Inject constructor() : Extractor {
             url.contains("twitch.tv") -> "Twitch"
             else -> "Web"
         }
+    }
+
+    companion object {
+        private const val BROWSER_UA =
+            "Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36"
     }
 }

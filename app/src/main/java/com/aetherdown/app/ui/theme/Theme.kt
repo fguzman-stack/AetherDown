@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.aetherdown.app.domain.model.ThemeMode
 
 private val DarkColorScheme = darkColorScheme(
     primary = AetherPrimary,
@@ -99,4 +100,10 @@ fun AetherDownTheme(
         typography = Typography,
         content = content
     )
+}
+
+fun ThemeMode.resolveDarkTheme(systemDark: Boolean): Boolean = when (this) {
+    ThemeMode.LIGHT -> false
+    ThemeMode.DARK -> true
+    ThemeMode.SYSTEM -> systemDark
 }

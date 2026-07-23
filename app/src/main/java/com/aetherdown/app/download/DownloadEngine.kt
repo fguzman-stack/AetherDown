@@ -157,6 +157,14 @@ class DownloadEngine @Inject constructor(
         activeTasks[downloadId]?.pause()
     }
 
+    fun pauseAndPersistActiveWork() {
+        val snapshot = activeTasks.toMap()
+        snapshot.forEach { (id, task) ->
+            task.pause()
+        }
+        Timber.d("Paused and persisted ${snapshot.size} active downloads due to timeout")
+    }
+
     fun resumeDownload(downloadId: Long) {
         activeTasks[downloadId]?.resume()
     }

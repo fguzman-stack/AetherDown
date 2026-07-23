@@ -26,21 +26,7 @@ import com.aetherdown.app.domain.model.ThemeMode
 fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    val state by viewModel.uiState.collectAsState()
-    val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        viewModel.recreateApp.collect {
-            var ctx = context
-            while (ctx is android.content.ContextWrapper) {
-                if (ctx is androidx.activity.ComponentActivity) {
-                    ctx.recreate()
-                    break
-                }
-                ctx = ctx.baseContext
-            }
-        }
-    }
+    val settings by viewModel.settings.collectAsState()
 
     Scaffold(
         topBar = {
@@ -60,42 +46,32 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            if (state.isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().padding(32.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                val s = state.settings
-
-                SettingsGroup("Download", Icons.Filled.Download) {
+            SettingsGroup("Download", Icons.Filled.Download) {
                     SliderSetting(
                         title = "Max concurrent downloads",
-                        subtitle = "${s.maxConcurrentDownloads} at once",
-                        value = s.maxConcurrentDownloads.toFloat(),
+                        subtitle = "${settings.maxConcurrentDownloads} at once",
+                        value = settings.maxConcurrentDownloads.toFloat(),
                         range = 1f..10f,
                         onValueChange = { viewModel.updateMaxConcurrentDownloads(it.toInt()) }
                     )
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                     SliderSetting(
                         title = "Max connections per download",
-                        subtitle = "${s.defaultMaxConnections} connections",
-                        value = s.defaultMaxConnections.toFloat(),
+                        subtitle = "${settings.defaultMaxConnections} connections",
+                        value = settings.defaultMaxConnections.toFloat(),
                         range = 1f..16f,
                         onValueChange = { viewModel.updateDefaultMaxConnections(it.toInt()) }
                     )
                 }
 
                 SettingsGroup("Network", Icons.Filled.Wifi) {
-                    SwitchSetting("Wi-Fi only", "Only download on Wi-Fi networks", s.wifiOnly) { viewModel.updateWifiOnly(it) }
+                    SwitchSetting("Wi-Fi only", "Only download on Wi-Fi networks", settings.wifiOnly) { viewModel.updateWifiOnly(it) }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                    SwitchSetting("Allow roaming", "Download while roaming", s.roamingAllowed) { viewModel.updateRoamingAllowed(it) }
+                    SwitchSetting("Allow roaming", "Download while roaming", settings.roamingAllowed) { viewModel.updateRoamingAllowed(it) }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                    SwitchSetting("Metered networks", "Allow download on metered connections", s.meteredNetworkAllowed) { viewModel.updateMeteredNetworkAllowed(it) }
+                    SwitchSetting("Metered networks", "Allow download on metered connections", settings.meteredNetworkAllowed) { viewModel.updateMeteredNetworkAllowed(it) }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                    SwitchSetting("Only on charger", "Pause downloads when not charging", s.onlyOnCharging) { viewModel.updateOnlyOnCharging(it) }
+                    SwitchSetting("Only on charger", "Pause downloads when not charging", settings.onlyOnCharging) { viewModel.updateOnlyOnCharging(it) }
                 }
 
                 SettingsGroup("Appearance", Icons.Filled.Palette) {
@@ -108,7 +84,7 @@ fun SettingsScreen(
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         ThemeMode.entries.forEach { mode ->
                             FilterChip(
-                                selected = s.darkTheme == mode,
+                                selected = settings.darkTheme == mode,
                                 onClick = { viewModel.updateThemeMode(mode) },
                                 label = {
                                     Text(
@@ -124,25 +100,25 @@ fun SettingsScreen(
                         }
                     }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                    SwitchSetting("Dynamic colors", "Use Material You dynamic colors (Android 12+)", s.useDynamicColors) { viewModel.updateUseDynamicColors(it) }
+                    SwitchSetting("Dynamic colors", "Use Material You dynamic colors (Android 12+)", settings.useDynamicColors) { viewModel.updateUseDynamicColors(it) }
                 }
 
                 SettingsGroup("Privacy", Icons.Filled.PrivacyTip) {
-                    SwitchSetting("Incognito mode", "Don't save download history", s.incognitoMode) { viewModel.updateIncognitoMode(it) }
+                    SwitchSetting("Incognito mode", "Don't save download history", settings.incognitoMode) { viewModel.updateIncognitoMode(it) }
                 }
 
                 SettingsGroup("Organization", Icons.Filled.Folder) {
-                    SwitchSetting("Organize by platform", "Save files in platform-specific folders", s.organizeByPlatform) { viewModel.updateOrganizeByPlatform(it) }
+                    SwitchSetting("Organize by platform", "Save files in platform-specific folders", settings.organizeByPlatform) { viewModel.updateOrganizeByPlatform(it) }
                 }
 
                 SettingsGroup("Notifications", Icons.Filled.Notifications) {
-                    SwitchSetting("Show progress", "Show download progress in notifications", s.notificationProgress) { viewModel.updateNotificationProgress(it) }
+                    SwitchSetting("Show progress", "Show download progress in notifications", settings.notificationProgress) { viewModel.updateNotificationProgress(it) }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                    SwitchSetting("Completion alerts", "Show notification when download completes", s.completedNotification) { viewModel.updateCompletedNotification(it) }
+                    SwitchSetting("Completion alerts", "Show notification when download completes", settings.completedNotification) { viewModel.updateCompletedNotification(it) }
                 }
 
                 SettingsGroup("Clipboard", Icons.Filled.ContentPaste) {
-                    SwitchSetting("Auto-detect URLs", "Automatically check clipboard for URLs", s.autoExtractClipboard) { viewModel.updateAutoExtractClipboard(it) }
+                    SwitchSetting("Auto-detect URLs", "Automatically check clipboard for URLs", settings.autoExtractClipboard) { viewModel.updateAutoExtractClipboard(it) }
                 }
 
                 SettingsGroup("Language", Icons.Filled.Language) {
@@ -168,7 +144,7 @@ fun SettingsScreen(
                     ) {
                         languageOptions.forEach { (lang, label) ->
                             FilterChip(
-                                selected = s.language == lang,
+                                selected = settings.language == lang,
                                 onClick = { viewModel.updateLanguage(lang) },
                                 label = { Text(label) },
                                 shape = RoundedCornerShape(10.dp)
@@ -233,7 +209,6 @@ fun SettingsScreen(
             }
         }
     }
-}
 
 @Composable
 private fun SettingsGroup(title: String, icon: androidx.compose.ui.graphics.vector.ImageVector, content: @Composable ColumnScope.() -> Unit) {

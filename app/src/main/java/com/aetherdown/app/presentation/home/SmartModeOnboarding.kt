@@ -1,6 +1,5 @@
 package com.aetherdown.app.presentation.home
 
-import android.content.Context
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,14 +18,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 
-data class SmartFeature(
+private data class SmartFeature(
     val id: String,
     val title: String,
     val description: String,
@@ -94,8 +92,6 @@ fun SmartModeDialog(
         animProgress = 1f
         delay(4000)
     }
-
-    val context = LocalContext.current
 
     if (dismissed) return
 
@@ -260,7 +256,6 @@ fun SmartModeDialog(
 
                 FilledTonalButton(
                     onClick = {
-                        saveSmartModePrefs(context, smartEnabled, featureToggles)
                         dismissed = true
                         onDismiss()
                     },
@@ -277,22 +272,4 @@ fun SmartModeDialog(
             }
         }
     }
-}
-
-private fun saveSmartModePrefs(
-    context: Context,
-    smartEnabled: Boolean,
-    featureToggles: Map<String, Boolean>
-) {
-    val prefs = context.getSharedPreferences("smart_mode", Context.MODE_PRIVATE)
-    prefs.edit().putBoolean("onboarding_done", true).apply()
-    prefs.edit().putBoolean("smart_enabled", smartEnabled).apply()
-    featureToggles.forEach { (id, enabled) ->
-        prefs.edit().putBoolean("feature_$id", enabled).apply()
-    }
-}
-
-fun isSmartModeOnboardingDone(context: Context): Boolean {
-    return context.getSharedPreferences("smart_mode", Context.MODE_PRIVATE)
-        .getBoolean("onboarding_done", false)
 }

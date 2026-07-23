@@ -1,6 +1,7 @@
 package com.aetherdown.app.domain.repository
 
 import com.aetherdown.app.domain.model.AppSettings
+import com.aetherdown.app.domain.model.Language
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
@@ -19,5 +20,12 @@ interface SettingsRepository {
     suspend fun updateIncognitoMode(enabled: Boolean)
     suspend fun updateDarkTheme(mode: String)
     suspend fun updateUseDynamicColors(enabled: Boolean)
+    suspend fun updateOrganizeByPlatform(enabled: Boolean)
+    suspend fun updateDeleteOriginalAfterConversion(enabled: Boolean)
+    suspend fun updateNotificationProgress(enabled: Boolean)
+    suspend fun updateCompletedNotification(enabled: Boolean)
     suspend fun updateLanguage(language: String)
+
+    val smartModeOnboardingSeen: Flow<Boolean>
+    suspend fun markSmartModeOnboardingSeen()
 }

@@ -35,7 +35,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImage
+import com.aetherdown.app.R
 import com.aetherdown.app.domain.model.ExtractResult
 import com.aetherdown.app.domain.model.StreamInfo
 import com.aetherdown.app.ui.theme.GradientEnd
@@ -44,21 +46,21 @@ import kotlinx.coroutines.delay
 
 data class PlatformLogo(
     val name: String,
-    val logoUrl: String,
+    val iconRes: Int,
     val color: Color
 )
 
 private val platforms = listOf(
-    PlatformLogo("YouTube", "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/240px-YouTube_full-color_icon_%282017%29.svg.png", Color(0xFFFF0000)),
-    PlatformLogo("TikTok", "https://upload.wikimedia.org/wikipedia/zh/thumb/9/9a/TikTok_Logo_2021.svg/240px-TikTok_Logo_2021.svg.png", Color(0xFF000000)),
-    PlatformLogo("Instagram", "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/240px-Instagram_logo_2016.svg.png", Color(0xFFE4405F)),
-    PlatformLogo("X / Twitter", "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/X_logo_2023.svg/240px-X_logo_2023.svg.png", Color(0xFF000000)),
-    PlatformLogo("Reddit", "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Reddit_logo_2023.svg/240px-Reddit_logo_2023.svg.png", Color(0xFFFF4500)),
-    PlatformLogo("SoundCloud", "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/SoundCloud_logo_2021.svg/240px-SoundCloud_logo_2021.svg.png", Color(0xFFFF3300)),
-    PlatformLogo("Facebook", "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/240px-Facebook_Logo_%282019%29.png", Color(0xFF1877F2)),
-    PlatformLogo("Twitch", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Twitch_logo_2022.svg/240px-Twitch_logo_2022.svg.png", Color(0xFF9146FF)),
-    PlatformLogo("Vimeo", "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Vimeo_Logo_2021.svg/240px-Vimeo_Logo_2021.svg.png", Color(0xFF1AB7EA)),
-    PlatformLogo("Dailymotion", "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Dailymotion_2021_logo.svg/240px-Dailymotion_2021_logo.svg.png", Color(0xFF00D2F3))
+    PlatformLogo("YouTube", R.drawable.ic_youtube, Color(0xFFFF0000)),
+    PlatformLogo("TikTok", R.drawable.ic_tiktok, Color(0xFF000000)),
+    PlatformLogo("Instagram", R.drawable.ic_instagram, Color(0xFFE4405F)),
+    PlatformLogo("X / Twitter", R.drawable.ic_twitter, Color(0xFF000000)),
+    PlatformLogo("Reddit", R.drawable.ic_reddit, Color(0xFFFF4500)),
+    PlatformLogo("SoundCloud", R.drawable.ic_soundcloud, Color(0xFFFF3300)),
+    PlatformLogo("Facebook", R.drawable.ic_facebook, Color(0xFF1877F2)),
+    PlatformLogo("Twitch", R.drawable.ic_twitch, Color(0xFF9146FF)),
+    PlatformLogo("Vimeo", R.drawable.ic_vimeo, Color(0xFF1AB7EA)),
+    PlatformLogo("Dailymotion", R.drawable.ic_dailymotion, Color(0xFF00D2F3))
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -327,10 +329,17 @@ fun HomeScreen(
                         message = state.lastFileName,
                         onDismiss = { viewModel.resetDownloadStarted() }
                     )
-                }
             }
         }
     }
+
+    val showOnboarding by viewModel.showSmartModeOnboarding.collectAsState()
+    if (showOnboarding) {
+        SmartModeDialog(
+            onDismiss = { viewModel.dismissSmartModeOnboarding() }
+        )
+    }
+}
 }
 
 @Composable
@@ -417,13 +426,13 @@ private fun PlatformCarousel() {
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        AsyncImage(
-                            model = platform.logoUrl,
+                        Icon(
+                            painter = painterResource(platform.iconRes),
                             contentDescription = platform.name,
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape),
-                            contentScale = ContentScale.Fit
+                            tint = Color.Unspecified
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -540,10 +549,11 @@ private fun StreamSelectionSheet(result: ExtractResult, viewModel: HomeViewModel
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     } else {
-                        val videoStreams = result.streams.filter { it.isVideo }
-                        val audioStreams = result.streams.filter { it.isAudio }
+                        val progressive = result.streams.filter { it.hasVideo && it.hasAudio }
+                        val videoOnly = result.streams.filter { it.hasVideo && !it.hasAudio }
+                        val audioOnly = result.streams.filter { !it.hasVideo && it.hasAudio }
 
-                        if (videoStreams.isNotEmpty()) {
+                        if (progressive.isNotEmpty()) {
                             Text(
                                 "Video",
                                 style = MaterialTheme.typography.titleSmall,
@@ -551,7 +561,7 @@ private fun StreamSelectionSheet(result: ExtractResult, viewModel: HomeViewModel
                                 color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.padding(bottom = 6.dp)
                             )
-                            videoStreams.forEach { stream ->
+                            progressive.forEach { stream ->
                                 StreamItem(stream) {
                                     viewModel.startDownload(stream)
                                     showDialog = false
@@ -559,7 +569,24 @@ private fun StreamSelectionSheet(result: ExtractResult, viewModel: HomeViewModel
                             }
                         }
 
-                        if (audioStreams.isNotEmpty()) {
+                        if (videoOnly.isNotEmpty()) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                "Video (no audio)",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.tertiary,
+                                modifier = Modifier.padding(bottom = 6.dp)
+                            )
+                            videoOnly.forEach { stream ->
+                                StreamItem(stream, subtitle = "No audio track") {
+                                    viewModel.startDownload(stream)
+                                    showDialog = false
+                                }
+                            }
+                        }
+
+                        if (audioOnly.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
                                 "Audio",
@@ -568,7 +595,7 @@ private fun StreamSelectionSheet(result: ExtractResult, viewModel: HomeViewModel
                                 color = MaterialTheme.colorScheme.secondary,
                                 modifier = Modifier.padding(bottom = 6.dp)
                             )
-                            audioStreams.forEach { stream ->
+                            audioOnly.forEach { stream ->
                                 StreamItem(stream) {
                                     viewModel.startDownload(stream)
                                     showDialog = false
@@ -600,7 +627,7 @@ private fun StreamSelectionSheet(result: ExtractResult, viewModel: HomeViewModel
     }
 }
 @Composable
-private fun StreamItem(stream: StreamInfo, onClick: () -> Unit) {
+private fun StreamItem(stream: StreamInfo, subtitle: String? = null, onClick: () -> Unit) {
     OutlinedCard(
         onClick = onClick,
         modifier = Modifier
@@ -647,9 +674,14 @@ private fun StreamItem(stream: StreamInfo, onClick: () -> Unit) {
                     Text(
                         text = buildString {
                             append(stream.format.uppercase())
-                            if (stream.fileSize > 0) {
+                            val size = stream.fileSize
+                            if (size != null && size > 0L) {
                                 append(" · ")
-                                append(formatFileSize(stream.fileSize))
+                                append(formatFileSize(size))
+                            }
+                            if (subtitle != null) {
+                                append(" · ")
+                                append(subtitle)
                             }
                         },
                         style = MaterialTheme.typography.bodySmall,

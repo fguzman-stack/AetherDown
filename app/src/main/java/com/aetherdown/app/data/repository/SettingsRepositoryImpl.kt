@@ -52,6 +52,7 @@ class SettingsRepositoryImpl @Inject constructor(
         val NOTIFICATION_PROGRESS = booleanPreferencesKey("notification_progress")
         val COMPLETED_NOTIFICATION = booleanPreferencesKey("completed_notification")
         val LANGUAGE = stringPreferencesKey("language")
+        val SMART_MODE_ONBOARDING_SEEN = booleanPreferencesKey("smart_mode_onboarding_seen")
     }
 
     override val settings: Flow<AppSettings> = context.dataStore.data.map { prefs ->
@@ -192,7 +193,34 @@ class SettingsRepositoryImpl @Inject constructor(
         context.dataStore.edit { it[Keys.USE_DYNAMIC_COLORS] = enabled }
     }
 
+    override suspend fun updateOrganizeByPlatform(enabled: Boolean) {
+        context.dataStore.edit { it[Keys.ORGANIZE_BY_PLATFORM] = enabled }
+    }
+
+    override suspend fun updateDeleteOriginalAfterConversion(enabled: Boolean) {
+        context.dataStore.edit { it[Keys.DELETE_ORIGINAL_AFTER_CONVERSION] = enabled }
+    }
+
+    override suspend fun updateNotificationProgress(enabled: Boolean) {
+        context.dataStore.edit { it[Keys.NOTIFICATION_PROGRESS] = enabled }
+    }
+
+    override suspend fun updateCompletedNotification(enabled: Boolean) {
+        context.dataStore.edit { it[Keys.COMPLETED_NOTIFICATION] = enabled }
+    }
+
     override suspend fun updateLanguage(language: String) {
         context.dataStore.edit { it[Keys.LANGUAGE] = language }
+    }
+
+    override val smartModeOnboardingSeen: Flow<Boolean> =
+        context.dataStore.data.map { prefs ->
+            prefs[Keys.SMART_MODE_ONBOARDING_SEEN] ?: false
+        }
+
+    override suspend fun markSmartModeOnboardingSeen() {
+        context.dataStore.edit {
+            it[Keys.SMART_MODE_ONBOARDING_SEEN] = true
+        }
     }
 }

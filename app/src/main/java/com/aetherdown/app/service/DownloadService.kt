@@ -92,6 +92,12 @@ class DownloadService : Service() {
         Timber.d("DownloadService destroyed")
     }
 
+    override fun onTimeout(startId: Int, fgsType: Int) {
+        Timber.w("DownloadService timeout for startId=$startId, fgsType=$fgsType")
+        downloadEngine.pauseAndPersistActiveWork()
+        stopSelf(startId)
+    }
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     companion object {
