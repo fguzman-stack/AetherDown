@@ -8,6 +8,16 @@
 
 ---
 
+## 📥 Download
+
+You can download the latest version of AetherDown from the [Releases](https://github.com/fguzman-stack/AetherDown/releases) page.
+
+1. Go to the latest release.
+2. Download the `app-debug.apk` (or the release APK if available).
+3. Install it on your Android device (ensure "Install from unknown sources" is enabled).
+
+---
+
 ## ✨ Key Features
 
 - **🚀 Smart Multimedia Extraction**: Powered by an updated `yt-dlp` engine, supporting YouTube, Twitter/X (including GIFs), Instagram (Reels), Facebook, TikTok, and hundreds more.
