@@ -4,6 +4,14 @@
 -keep class dagger.hilt.** { *; }
 -keep class javax.inject.** { *; }
 -keep class * extends dagger.hilt.android.internal.managers.ViewComponentManager$FragmentContextWrapper { *; }
+-keep class com.aetherdown.app.AetherApp { *; }
+-keep class com.aetherdown.app.MainActivity { *; }
+-keep class com.aetherdown.app.** { @dagger.hilt.android.AndroidEntryPoint *; }
+-keep class com.aetherdown.app.** { @dagger.hilt.android.internal.managers.ViewComponentManager$FragmentContextWrapper *; }
+-keep class com.aetherdown.app.presentation.** { @dagger.hilt.android.lifecycle.HiltViewModel *; }
+-keep class com.aetherdown.app.di.** { *; }
+-keep class * extends com.aetherdown.app.AetherApp { *; }
+-keep class * extends com.aetherdown.app.MainActivity { *; }
 
 # Keep Room entities
 -keep class com.aetherdown.app.data.local.entity.** { *; }
