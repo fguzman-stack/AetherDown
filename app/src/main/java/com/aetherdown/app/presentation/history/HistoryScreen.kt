@@ -18,7 +18,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.aetherdown.app.R
 import com.aetherdown.app.data.local.entity.HistoryEntity
 import com.aetherdown.app.util.FormatUtils
 
@@ -32,14 +34,14 @@ fun HistoryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("History", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.history_title), fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 ),
                 actions = {
                     if (state.history.isNotEmpty()) {
                         IconButton(onClick = { viewModel.clearAllHistory() }) {
-                            Icon(Icons.Filled.DeleteSweep, "Clear all")
+                            Icon(Icons.Filled.DeleteSweep, stringResource(R.string.clear_all))
                         }
                     }
                 }
@@ -54,14 +56,14 @@ fun HistoryScreen(
             OutlinedTextField(
                 value = state.searchQuery,
                 onValueChange = { viewModel.updateSearch(it) },
-                placeholder = { Text("Search history...", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) },
+                placeholder = { Text(stringResource(R.string.search_history), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) },
                 leadingIcon = {
                     Icon(Icons.Filled.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                 },
                 trailingIcon = {
                     if (state.searchQuery.isNotEmpty()) {
                         IconButton(onClick = { viewModel.updateSearch("") }) {
-                            Icon(Icons.Filled.Clear, "Clear")
+                            Icon(Icons.Filled.Clear, stringResource(R.string.clear))
                         }
                     }
                 },
@@ -85,7 +87,7 @@ fun HistoryScreen(
                         FilterChip(
                             selected = state.selectedPlatform == null,
                             onClick = { viewModel.clearFilters() },
-                            label = { Text("All") },
+                            label = { Text(stringResource(R.string.all)) },
                             shape = RoundedCornerShape(10.dp)
                         )
                     }
@@ -130,7 +132,7 @@ fun HistoryScreen(
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            "No history found",
+                            stringResource(R.string.no_history),
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -237,7 +239,7 @@ private fun HistoryItem(
             ) {
                 Icon(
                     Icons.Filled.Delete,
-                    "Delete",
+                    stringResource(R.string.delete),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                     modifier = Modifier.size(20.dp)
                 )

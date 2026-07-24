@@ -131,6 +131,7 @@ class HomeViewModel @Inject constructor(
         Toast.makeText(context, "Downloading...", Toast.LENGTH_SHORT).show()
 
         viewModelScope.launch {
+            val settings = settingsRepository.getSettingsOnce()
             val fileName = FileUtils.getSafeFileName("${extractResult.title}.${stream.format}")
             _uiState.value = _uiState.value.copy(downloadStarted = true, lastFileName = fileName)
 
@@ -142,7 +143,11 @@ class HomeViewModel @Inject constructor(
                 referer = extractResult.url,
                 headers = stream.httpHeaders,
                 pageUrl = extractResult.url,
-                platform = extractResult.platform
+                platform = extractResult.platform,
+                title = extractResult.title,
+                thumbnailUrl = extractResult.thumbnailUrl,
+                duration = extractResult.duration,
+                isIncognito = settings.incognitoMode
             )
 
             downloadGateway.download(request)
@@ -176,13 +181,18 @@ class HomeViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(downloadStarted = true, error = null, lastFileName = fileName)
 
         viewModelScope.launch {
+            val settings = settingsRepository.getSettingsOnce()
             val request = DownloadRequest(
                 url = url,
                 fileName = fileName,
                 mimeType = "video/mp4",
                 referer = pageUrl,
                 pageUrl = pageUrl,
-                platform = platform
+                platform = platform,
+                title = extractResult?.title ?: title,
+                thumbnailUrl = extractResult?.thumbnailUrl,
+                duration = extractResult?.duration ?: 0L,
+                isIncognito = settings.incognitoMode
             )
             downloadGateway.download(request)
                 .onSuccess { uri ->

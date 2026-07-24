@@ -148,4 +148,26 @@ Descargar material con derechos de autor sin permiso puede violar las leyes apli
     <string name="unit_hours">h</string>
     <string name="unit_minutes">m</string>
     <string name="unit_seconds">s</string>
+    <string name="smart_mode_welcome">¡Bienvenido a AetherDown!</string>
+    <string name="smart_mode_enable_question">¿Activar Modo Inteligente para funciones IA?</string>
+    <string name="smart_mode_title">Modo Inteligente</string>
+    <string name="smart_mode_enabled_desc">Funciones IA activadas</string>
+    <string name="smart_mode_disabled_desc">Modo de descarga estándar</string>
+    <string name="smart_mode_choose_features">Elige qué funciones activar:</string>
+    <string name="smart_mode_activate">Activar Modo Inteligente</string>
+    <string name="smart_mode_continue_standard">Continuar sin Modo Inteligente</string>
+    <string name="smart_feature_classify">Clasificación Inteligente</string>
+    <string name="smart_feature_classify_desc">Detectar auto. video, música o docs desde URL</string>
+    <string name="smart_feature_naming">Nombramiento Inteligente</string>
+    <string name="smart_feature_naming_desc">Generar nombres descriptivos según el contenido</string>
+    <string name="smart_feature_transcribe">Transcripción</string>
+    <string name="smart_feature_transcribe_desc">Transcribir audio/video a texto tras descargar</string>
+    <string name="smart_feature_dedup">Detección de Duplicados</string>
+    <string name="smart_feature_dedup_desc">Omitir descargas que ya están en tu biblioteca</string>
+    <string name="smart_feature_organize">Auto Organizar</string>
+    <string name="smart_feature_organize_desc">Ordenar en carpetas según el tipo de contenido</string>
+    <string name="smart_feature_summarize">Resumen</string>
+    <string name="smart_feature_summarize_desc">Obtener puntos clave sin ver el video completo</string>
+    <string name="smart_feature_search">Búsqueda Semántica</string>
+    <string name="smart_feature_search_desc">Buscar en tu biblioteca por descripción</string>
 </resources>

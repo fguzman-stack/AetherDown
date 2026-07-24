@@ -3,6 +3,8 @@ package com.aetherdown.app.download
 import android.content.Context
 import android.net.Uri
 import com.aetherdown.app.domain.model.DownloadRequest
+import com.aetherdown.app.data.local.entity.HistoryEntity
+import com.aetherdown.app.domain.repository.HistoryRepository
 import com.aetherdown.app.domain.repository.MediaDownloadGateway
 import com.aetherdown.app.util.FileUtils
 import com.yausername.youtubedl_android.YoutubeDL
@@ -21,7 +23,8 @@ import javax.inject.Singleton
 @Singleton
 class SimpleDownloader @Inject constructor(
     private val client: OkHttpClient,
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val historyRepository: HistoryRepository
 ) : MediaDownloadGateway {
 
     private val httpClient = client.newBuilder()
@@ -42,7 +45,7 @@ class SimpleDownloader @Inject constructor(
                         downloadWithHttp(request)
                     } catch (e: Exception) {
                         // CDN often returns HTML soft-blocks without proper session; retry via yt-dlp
-                        if (isHtmlOrSoftBlock(e) && hasPageContext(request)) {
+                        if (isHtmlOrSoftBlock(e)) {
                             Timber.w(e, "HTTP download returned non-media; falling back to yt-dlp")
                             downloadWithYtDlp(request)
                         } else {
@@ -80,22 +83,36 @@ class SimpleDownloader @Inject constructor(
         val p = platform.lowercase()
         return p.contains("twitter") || p.contains("x/twitter") || p == "x" ||
             p.contains("instagram") || p.contains("tiktok") ||
-            p.contains("facebook") || p.contains("reddit")
+            p.contains("facebook") || p.contains("reddit") ||
+            p.contains("youtube") || p.contains("vimeo") || p.contains("twitch") ||
+            p.contains("dailymotion") || p.contains("soundcloud")
     }
 
     private fun isSocialPage(url: String): Boolean {
         val u = url.lowercase()
-        return u.contains("twitter.com") || u.contains("x.com/") || u.contains("://x.com") ||
-            u.contains("instagram.com") || u.contains("tiktok.com") ||
-            u.contains("facebook.com") || u.contains("fb.watch") ||
-            u.contains("reddit.com")
+        return u.contains("twitter.com") || u.contains("x.com") || u.contains("twimg.com") ||
+            u.contains("instagram.com") || u.contains("cdninstagram.com") || u.contains("instagr.am") ||
+            u.contains("tiktok.com") || u.contains("tiktokcdn.com") ||
+            u.contains("facebook.com") || u.contains("fb.watch") || u.contains("fb.com") || u.contains("fbcdn.net") ||
+            u.contains("reddit.com") || u.contains("redd.it") ||
+            u.contains("youtube.com") || u.contains("youtu.be") || u.contains("googlevideo.com") ||
+            u.contains("vimeo.com") || u.contains("vimeocdn.com") ||
+            u.contains("twitch.tv") ||
+            u.contains("dailymotion.com") || u.contains("dmcdn.net") ||
+            u.contains("soundcloud.com") || u.contains("sndcdn.com")
     }
 
     private fun looksLikeWebPage(url: String): Boolean {
-        val u = url.lowercase()
+        val u = url.lowercase().substringBefore("?")
         if (looksLikeMediaCdn(u)) return false
+        
         return u.contains("twitter.com") || u.contains("x.com") ||
-            u.contains("/status/") || u.contains("/reel/") || u.contains("/watch")
+            u.contains("youtube.com") || u.contains("youtu.be") ||
+            u.contains("instagram.com") || u.contains("instagr.am") || u.contains("tiktok.com") ||
+            u.contains("facebook.com") || u.contains("fb.watch") ||
+            u.contains("/status/") || u.contains("/reel/") || u.contains("/reels/") || u.contains("/watch") ||
+            u.contains("/shorts/") || u.contains("/p/") || u.contains("/tv/") ||
+            !u.contains(".") || u.endsWith(".html") || u.endsWith(".htm") || u.endsWith("/")
     }
 
     private fun looksLikeMediaCdn(url: String): Boolean {
@@ -105,12 +122,16 @@ class SimpleDownloader @Inject constructor(
             u.contains("cdninstagram") ||
             u.contains("tiktokcdn") ||
             u.contains("googlevideo.com") ||
+            u.contains("fbcdn.net") ||
             u.contains(".mp4") ||
             u.contains(".m4a") ||
-            u.contains(".webm")
+            u.contains(".webm") ||
+            u.contains(".mp3") ||
+            u.contains(".wav") ||
+            u.contains(".gif")
     }
 
-    private fun downloadWithYtDlp(request: DownloadRequest): Uri {
+    private suspend fun downloadWithYtDlp(request: DownloadRequest): Uri {
         val pageUrl = listOf(request.pageUrl, request.referer, request.url)
             .firstOrNull { !it.isNullOrBlank() }
             ?: error("No URL available for yt-dlp download")
@@ -141,18 +162,25 @@ class SimpleDownloader @Inject constructor(
         ytdlpRequest.addOption("--no-mtime")
         ytdlpRequest.addOption("--no-playlist")
         ytdlpRequest.addOption("--no-part")
+        ytdlpRequest.addOption("--no-update")
+        ytdlpRequest.addOption("--no-warnings")
+        ytdlpRequest.addOption("--downloader", "libaria2c.so")
         ytdlpRequest.addOption("--restrict-filenames")
         ytdlpRequest.addOption("--retries", "3")
 
         if (isSocialPage(pageUrl) || isSocialPlatform(request.platform)) {
             val referer = when {
                 pageUrl.contains("twitter.com") || pageUrl.contains("x.com") -> "https://x.com/"
-                pageUrl.contains("instagram.com") -> "https://www.instagram.com/"
+                pageUrl.contains("instagram.com") || pageUrl.contains("instagr.am") -> "https://www.instagram.com/"
                 pageUrl.contains("tiktok.com") -> "https://www.tiktok.com/"
+                pageUrl.contains("youtube.com") || pageUrl.contains("youtu.be") -> "https://www.youtube.com/"
+                pageUrl.contains("facebook.com") || pageUrl.contains("fb.watch") -> "https://www.facebook.com/"
                 else -> pageUrl
             }
             ytdlpRequest.addOption("--add-header", "Referer:$referer")
             ytdlpRequest.addOption("--add-header", "User-Agent:$BROWSER_UA")
+            ytdlpRequest.addOption("--add-header", "Accept-Language:en-US,en;q=0.9")
+            ytdlpRequest.addOption("--extractor-args", "instagram:allow_vp9=True")
         }
 
         Timber.d("yt-dlp execute: $pageUrl format=${request.formatId}")
@@ -179,17 +207,35 @@ class SimpleDownloader @Inject constructor(
                 downloaded
             }
 
-            return FileUtils.saveToMediaStore(
+            val uri = FileUtils.saveToMediaStore(
                 context = context,
                 file = named,
                 mimeType = mime
             ) ?: error("Failed to save to MediaStore")
+
+            if (!request.isIncognito) {
+                val history = HistoryEntity(
+                    url = request.pageUrl ?: request.url,
+                    fileName = finalName,
+                    filePath = uri.toString(),
+                    fileSize = named.length(),
+                    platform = request.platform,
+                    title = request.title,
+                    thumbnailUrl = request.thumbnailUrl,
+                    duration = request.duration,
+                    mimeType = mime,
+                    isIncognito = false
+                )
+                historyRepository.insertHistory(history)
+            }
+
+            return uri
         } finally {
             outDir.deleteRecursively()
         }
     }
 
-    private fun downloadWithHttp(request: DownloadRequest): Uri {
+    private suspend fun downloadWithHttp(request: DownloadRequest): Uri {
         val headers = buildHeaders(request)
 
         val reqBuilder = Request.Builder()
@@ -226,11 +272,29 @@ class SimpleDownloader @Inject constructor(
 
                 validateDownloadedMedia(tempFile, contentType)
 
-                return FileUtils.saveToMediaStore(
+                val uri = FileUtils.saveToMediaStore(
                     context = context,
                     file = tempFile,
                     mimeType = request.mimeType
                 ) ?: error("Failed to save to MediaStore")
+
+                if (!request.isIncognito) {
+                    val history = HistoryEntity(
+                        url = request.pageUrl ?: request.url,
+                        fileName = request.fileName.ifBlank { tempFile.name },
+                        filePath = uri.toString(),
+                        fileSize = tempFile.length(),
+                        platform = request.platform,
+                        title = request.title,
+                        thumbnailUrl = request.thumbnailUrl,
+                        duration = request.duration,
+                        mimeType = request.mimeType,
+                        isIncognito = false
+                    )
+                    historyRepository.insertHistory(history)
+                }
+
+                return uri
             } finally {
                 tempFile.delete()
             }
@@ -249,13 +313,23 @@ class SimpleDownloader @Inject constructor(
                     headers["Referer"] = "https://x.com/"
                     headers["Origin"] = "https://x.com"
                 }
-                page.contains("instagram.com") -> {
+                page.contains("instagram.com") || page.contains("instagr.am") || 
+                    request.url.contains("cdninstagram") -> {
                     headers["Referer"] = "https://www.instagram.com/"
                     headers["Origin"] = "https://www.instagram.com"
                 }
-                page.contains("tiktok.com") -> {
+                page.contains("tiktok.com") || request.url.contains("tiktokcdn") -> {
                     headers["Referer"] = "https://www.tiktok.com/"
                     headers["Origin"] = "https://www.tiktok.com"
+                }
+                page.contains("youtube.com") || page.contains("youtu.be") || 
+                    request.url.contains("googlevideo.com") -> {
+                    headers["Referer"] = "https://www.youtube.com/"
+                }
+                page.contains("facebook.com") || page.contains("fb.watch") || 
+                    request.url.contains("fbcdn.net") -> {
+                    headers["Referer"] = "https://www.facebook.com/"
+                    headers["Origin"] = "https://www.facebook.com"
                 }
             }
         }
@@ -295,6 +369,6 @@ class SimpleDownloader @Inject constructor(
 
     companion object {
         private const val BROWSER_UA =
-            "Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
     }
 }

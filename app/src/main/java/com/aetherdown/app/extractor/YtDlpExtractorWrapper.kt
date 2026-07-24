@@ -4,6 +4,7 @@ import com.aetherdown.app.domain.model.ExtractResult
 import com.aetherdown.app.domain.model.ExtractionError
 import com.aetherdown.app.domain.model.StreamInfo
 import com.yausername.youtubedl_android.YoutubeDL
+import com.yausername.youtubedl_android.YoutubeDLRequest
 import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.mapper.VideoInfo
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,24 @@ class YtDlpExtractorWrapper @Inject constructor() : Extractor {
 
     override suspend fun extract(url: String): Result<ExtractResult> = withContext(Dispatchers.IO) {
         try {
-            val info = YoutubeDL.getInstance().getInfo(url)
+            val request = YoutubeDLRequest(url)
+            request.addOption("--no-playlist")
+            request.addOption("--no-update")
+            
+            // Basic headers for extraction
+            val referer = when {
+                url.contains("twitter.com") || url.contains("x.com") -> "https://x.com/"
+                url.contains("instagram.com") || url.contains("instagr.am") -> "https://www.instagram.com/"
+                url.contains("tiktok.com") -> "https://www.tiktok.com/"
+                url.contains("facebook.com") -> "https://www.facebook.com/"
+                else -> url
+            }
+            request.addOption("--add-header", "Referer:$referer")
+            request.addOption("--add-header", "User-Agent:$BROWSER_UA")
+            request.addOption("--add-header", "Accept-Language:en-US,en;q=0.9")
+            request.addOption("--extractor-args", "instagram:allow_vp9=True")
+
+            val info = YoutubeDL.getInstance().getInfo(request)
             val detectedPlatform = detectPlatform(info.webpageUrl ?: url)
             val streams = buildStreams(info, detectedPlatform)
 
@@ -167,6 +185,17 @@ class YtDlpExtractorWrapper @Inject constructor() : Extractor {
                 "User-Agent" to BROWSER_UA,
                 "Accept" to "*/*"
             )
+            platform == "YouTube" || page.contains("youtube.com") || page.contains("youtu.be") -> mapOf(
+                "Referer" to "https://www.youtube.com/",
+                "User-Agent" to BROWSER_UA,
+                "Accept" to "*/*"
+            )
+            platform == "Facebook" || page.contains("facebook.com") || page.contains("fb.watch") -> mapOf(
+                "Referer" to "https://www.facebook.com/",
+                "Origin" to "https://www.facebook.com",
+                "User-Agent" to BROWSER_UA,
+                "Accept" to "*/*"
+            )
             else -> mapOf(
                 "User-Agent" to BROWSER_UA,
                 "Accept" to "*/*"
@@ -192,15 +221,15 @@ class YtDlpExtractorWrapper @Inject constructor() : Extractor {
 
     private fun detectPlatform(url: String): String {
         return when {
-            url.contains("youtube.com") || url.contains("youtu.be") -> "YouTube"
-            url.contains("tiktok.com") -> "TikTok"
-            url.contains("instagram.com") -> "Instagram"
-            url.contains("facebook.com") || url.contains("fb.com") || url.contains("fb.watch") -> "Facebook"
-            url.contains("twitter.com") || url.contains("x.com") -> "X/Twitter"
-            url.contains("reddit.com") -> "Reddit"
-            url.contains("soundcloud.com") -> "SoundCloud"
-            url.contains("vimeo.com") -> "Vimeo"
-            url.contains("dailymotion.com") -> "Dailymotion"
+            url.contains("youtube.com") || url.contains("youtu.be") || url.contains("googlevideo.com") -> "YouTube"
+            url.contains("tiktok.com") || url.contains("tiktokcdn.com") -> "TikTok"
+            url.contains("instagram.com") || url.contains("cdninstagram.com") || url.contains("instagr.am") -> "Instagram"
+            url.contains("facebook.com") || url.contains("fb.com") || url.contains("fb.watch") || url.contains("fbcdn.net") -> "Facebook"
+            url.contains("twitter.com") || url.contains("x.com") || url.contains("twimg.com") -> "X/Twitter"
+            url.contains("reddit.com") || url.contains("redd.it") -> "Reddit"
+            url.contains("soundcloud.com") || url.contains("sndcdn.com") -> "SoundCloud"
+            url.contains("vimeo.com") || url.contains("vimeocdn.com") -> "Vimeo"
+            url.contains("dailymotion.com") || url.contains("dmcdn.net") -> "Dailymotion"
             url.contains("twitch.tv") -> "Twitch"
             else -> "Web"
         }
@@ -208,6 +237,6 @@ class YtDlpExtractorWrapper @Inject constructor() : Extractor {
 
     companion object {
         private const val BROWSER_UA =
-            "Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
     }
 }

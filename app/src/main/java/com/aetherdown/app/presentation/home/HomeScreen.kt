@@ -36,12 +36,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.aetherdown.app.R
 import com.aetherdown.app.domain.model.ExtractResult
 import com.aetherdown.app.domain.model.StreamInfo
 import com.aetherdown.app.ui.theme.GradientEnd
 import com.aetherdown.app.ui.theme.GradientStart
+import com.aetherdown.app.util.FormatUtils
 import kotlinx.coroutines.delay
 
 data class PlatformLogo(
@@ -101,14 +103,14 @@ fun HomeScreen(
             ) {
                 Column {
                     Text(
-                        text = "AetherDown",
+                        text = stringResource(R.string.home_title),
                         style = MaterialTheme.typography.headlineLarge,
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Universal download manager",
+                        text = stringResource(R.string.app_description),
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White.copy(alpha = 0.8f)
                     )
@@ -133,8 +135,8 @@ fun HomeScreen(
                         OutlinedTextField(
                             value = state.urlInput,
                             onValueChange = { viewModel.updateUrl(it) },
-                            label = { Text("Paste URL") },
-                            placeholder = { Text("https://example.com/video", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) },
+                            label = { Text(stringResource(R.string.paste_url)) },
+                            placeholder = { Text(stringResource(R.string.url_placeholder), color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) },
                             leadingIcon = {
                                 Icon(
                                     Icons.Outlined.Link,
@@ -145,7 +147,7 @@ fun HomeScreen(
                             trailingIcon = {
                                 if (state.urlInput.isNotEmpty()) {
                                     IconButton(onClick = { viewModel.updateUrl("") }) {
-                                        Icon(Icons.Filled.Clear, contentDescription = "Clear")
+                                        Icon(Icons.Filled.Clear, contentDescription = stringResource(R.string.clear))
                                     }
                                 }
                             },
@@ -188,7 +190,7 @@ fun HomeScreen(
                                 )
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Text(
-                                    "Extracting...",
+                                    stringResource(R.string.extracting),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.SemiBold
                                 )
@@ -200,7 +202,7 @@ fun HomeScreen(
                                 )
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Text(
-                                    "Extract Streams",
+                                    stringResource(R.string.extract_streams),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.SemiBold
                                 )
@@ -233,13 +235,13 @@ fun HomeScreen(
                                 )
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Text(
-                                    "URL detected in clipboard",
+                                    stringResource(R.string.clipboard_detected),
                                     style = MaterialTheme.typography.titleSmall,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
                                 Spacer(modifier = Modifier.weight(1f))
                                 TextButton(onClick = { viewModel.dismissClipboardBanner() }) {
-                                    Text("Dismiss", style = MaterialTheme.typography.labelMedium)
+                                    Text(stringResource(R.string.dismiss), style = MaterialTheme.typography.labelMedium)
                                 }
                             }
                             Spacer(modifier = Modifier.height(8.dp))
@@ -299,7 +301,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(28.dp))
 
                 Text(
-                    "Supported Platforms",
+                    stringResource(R.string.supported_platforms),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
@@ -313,7 +315,7 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    "Enter any video, music, or torrent URL to start downloading",
+                    stringResource(R.string.url_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                     textAlign = TextAlign.Center,
@@ -325,11 +327,11 @@ fun HomeScreen(
                 if (state.downloadStarted) {
                     SweetAlertDialog(
                         icon = Icons.Filled.CheckCircle,
-                        title = "Download Added!",
+                        title = stringResource(R.string.download_added_to_queue),
                         message = state.lastFileName,
                         onDismiss = { viewModel.resetDownloadStarted() }
                     )
-            }
+                }
         }
     }
 
@@ -409,16 +411,9 @@ private fun PlatformCarousel() {
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(64.dp)
+                            .size(72.dp)
                             .clip(CircleShape)
-                            .background(
-                                Brush.linearGradient(
-                                    colors = listOf(
-                                        platform.color.copy(alpha = 0.8f),
-                                        platform.color.copy(alpha = 0.3f)
-                                    )
-                                )
-                            )
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
                             .then(
                                 Modifier.graphicsLayer {
                                     this.alpha = if (pageOffset == 0) 1f else 1f - pageOffset.toFloat() * 0.3f
@@ -426,13 +421,12 @@ private fun PlatformCarousel() {
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Icon(
+                        androidx.compose.foundation.Image(
                             painter = painterResource(platform.iconRes),
                             contentDescription = platform.name,
                             modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape),
-                            tint = Color.Unspecified
+                                .size(48.dp)
+                                .clip(CircleShape)
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -491,7 +485,7 @@ private fun StreamSelectionSheet(result: ExtractResult, viewModel: HomeViewModel
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            "Select Format",
+                            stringResource(R.string.select_format),
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleLarge
                         )
@@ -544,7 +538,7 @@ private fun StreamSelectionSheet(result: ExtractResult, viewModel: HomeViewModel
 
                     if (result.streams.isEmpty()) {
                         Text(
-                            "No streams found. Try direct download.",
+                            stringResource(R.string.no_streams_found),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -555,7 +549,7 @@ private fun StreamSelectionSheet(result: ExtractResult, viewModel: HomeViewModel
 
                         if (progressive.isNotEmpty()) {
                             Text(
-                                "Video",
+                                stringResource(R.string.video),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary,
@@ -615,12 +609,12 @@ private fun StreamSelectionSheet(result: ExtractResult, viewModel: HomeViewModel
                 ) {
                     Icon(Icons.Filled.Download, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text("Direct Download")
+                    Text(stringResource(R.string.direct_download))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -677,7 +671,7 @@ private fun StreamItem(stream: StreamInfo, subtitle: String? = null, onClick: ()
                             val size = stream.fileSize
                             if (size != null && size > 0L) {
                                 append(" · ")
-                                append(formatFileSize(size))
+                                append(FormatUtils.formatFileSize(size))
                             }
                             if (subtitle != null) {
                                 append(" · ")
@@ -699,7 +693,7 @@ private fun StreamItem(stream: StreamInfo, subtitle: String? = null, onClick: ()
             ) {
                 Icon(
                     Icons.Filled.Download,
-                    contentDescription = "Download",
+                    contentDescription = stringResource(R.string.download),
                     modifier = Modifier.size(18.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -795,11 +789,3 @@ private fun SweetAlertDialog(
     }
 }
 
-private fun formatFileSize(bytes: Long): String {
-    return when {
-        bytes > 1_000_000_000 -> "${bytes / 1_000_000_000} GB"
-        bytes > 1_000_000 -> "${bytes / 1_000_000} MB"
-        bytes > 1_000 -> "${bytes / 1_000} KB"
-        else -> "$bytes B"
-    }
-}

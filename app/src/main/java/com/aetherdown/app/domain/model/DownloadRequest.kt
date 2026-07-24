@@ -12,5 +12,9 @@ data class DownloadRequest(
      * and download correctly for platforms that block raw CDN fetches (X/Twitter, etc.).
      */
     val pageUrl: String? = null,
-    val platform: String = ""
+    val platform: String = "",
+    val title: String = "",
+    val thumbnailUrl: String? = null,
+    val duration: Long = 0L,
+    val isIncognito: Boolean = false
 )

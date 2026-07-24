@@ -89,9 +89,16 @@ fun AetherDownTheme(
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            var context = view.context
+            while (context !is Activity && context is android.content.ContextWrapper) {
+                context = context.baseContext
+            }
+            
+            if (context is Activity) {
+                val window = context.window
+                window.statusBarColor = colorScheme.background.toArgb()
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            }
         }
     }
 

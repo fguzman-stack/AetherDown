@@ -10,7 +10,9 @@ import android.os.PersistableBundle
 import dagger.hilt.android.qualifiers.ApplicationContext
 import com.aetherdown.app.data.local.entity.DownloadEntity
 import com.aetherdown.app.data.local.entity.DownloadStatus
+import com.aetherdown.app.data.local.entity.HistoryEntity
 import com.aetherdown.app.domain.repository.DownloadRepository
+import com.aetherdown.app.domain.repository.HistoryRepository
 import com.aetherdown.app.service.DownloadService
 import com.aetherdown.app.util.FileUtils
 import kotlinx.coroutines.*
@@ -28,6 +30,7 @@ import javax.inject.Singleton
 class DownloadEngine @Inject constructor(
     @ApplicationContext private val context: Context,
     private val downloadRepository: DownloadRepository,
+    private val historyRepository: HistoryRepository,
     private val client: OkHttpClient
 ) {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -122,7 +125,35 @@ class DownloadEngine @Inject constructor(
             task.state.collect { updated ->
                 downloadRepository.updateDownload(updated)
                 when (updated.status) {
-                    DownloadStatus.COMPLETED, DownloadStatus.FAILED -> {
+                    DownloadStatus.COMPLETED -> {
+                        if (activeTasks.remove(downloadId) != null) {
+                            activeCount.decrementAndGet()
+                            
+                            // Insert into history
+                            if (!updated.isIncognito) {
+                                val history = HistoryEntity(
+                                    url = updated.url,
+                                    fileName = updated.fileName,
+                                    filePath = updated.filePath,
+                                    fileSize = updated.fileSize,
+                                    platform = updated.platform,
+                                    title = updated.title,
+                                    thumbnailUrl = updated.thumbnailUrl,
+                                    duration = updated.duration,
+                                    mimeType = updated.mimeType,
+                                    isIncognito = false,
+                                    completedAt = updated.completedAt ?: System.currentTimeMillis()
+                                )
+                                historyRepository.insertHistory(history)
+                            }
+                            
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                                processQueue()
+                                stopForegroundServiceIfIdle()
+                            }
+                        }
+                    }
+                    DownloadStatus.FAILED -> {
                         if (activeTasks.remove(downloadId) != null) {
                             activeCount.decrementAndGet()
                             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {

@@ -17,7 +17,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.aetherdown.app.R
 import com.aetherdown.app.domain.model.Language
 import com.aetherdown.app.domain.model.ThemeMode
 
@@ -31,7 +33,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.settings_title), fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background
                 )
@@ -46,37 +48,37 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            SettingsGroup("Download", Icons.Filled.Download) {
+            SettingsGroup(stringResource(R.string.settings_download), Icons.Filled.Download) {
                     SliderSetting(
-                        title = "Max concurrent downloads",
-                        subtitle = "${settings.maxConcurrentDownloads} at once",
+                        title = stringResource(R.string.max_concurrent_downloads),
+                        subtitle = stringResource(R.string.max_concurrent_downloads_subtitle, settings.maxConcurrentDownloads),
                         value = settings.maxConcurrentDownloads.toFloat(),
                         range = 1f..10f,
                         onValueChange = { viewModel.updateMaxConcurrentDownloads(it.toInt()) }
                     )
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                     SliderSetting(
-                        title = "Max connections per download",
-                        subtitle = "${settings.defaultMaxConnections} connections",
+                        title = stringResource(R.string.max_connections),
+                        subtitle = stringResource(R.string.max_connections_subtitle, settings.defaultMaxConnections),
                         value = settings.defaultMaxConnections.toFloat(),
                         range = 1f..16f,
                         onValueChange = { viewModel.updateDefaultMaxConnections(it.toInt()) }
                     )
                 }
 
-                SettingsGroup("Network", Icons.Filled.Wifi) {
-                    SwitchSetting("Wi-Fi only", "Only download on Wi-Fi networks", settings.wifiOnly) { viewModel.updateWifiOnly(it) }
+                SettingsGroup(stringResource(R.string.settings_network), Icons.Filled.Wifi) {
+                    SwitchSetting(stringResource(R.string.wifi_only), stringResource(R.string.wifi_only_desc), settings.wifiOnly) { viewModel.updateWifiOnly(it) }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                    SwitchSetting("Allow roaming", "Download while roaming", settings.roamingAllowed) { viewModel.updateRoamingAllowed(it) }
+                    SwitchSetting(stringResource(R.string.allow_roaming), stringResource(R.string.allow_roaming_desc), settings.roamingAllowed) { viewModel.updateRoamingAllowed(it) }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                    SwitchSetting("Metered networks", "Allow download on metered connections", settings.meteredNetworkAllowed) { viewModel.updateMeteredNetworkAllowed(it) }
+                    SwitchSetting(stringResource(R.string.metered_networks), stringResource(R.string.metered_networks_desc), settings.meteredNetworkAllowed) { viewModel.updateMeteredNetworkAllowed(it) }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                    SwitchSetting("Only on charger", "Pause downloads when not charging", settings.onlyOnCharging) { viewModel.updateOnlyOnCharging(it) }
+                    SwitchSetting(stringResource(R.string.only_on_charger), stringResource(R.string.only_on_charger_desc), settings.onlyOnCharging) { viewModel.updateOnlyOnCharging(it) }
                 }
 
-                SettingsGroup("Appearance", Icons.Filled.Palette) {
+                SettingsGroup(stringResource(R.string.settings_appearance), Icons.Filled.Palette) {
                     Text(
-                        "Theme",
+                        stringResource(R.string.theme),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Medium
                     )
@@ -89,9 +91,9 @@ fun SettingsScreen(
                                 label = {
                                     Text(
                                         when (mode) {
-                                            ThemeMode.LIGHT -> "Light"
-                                            ThemeMode.DARK -> "Dark"
-                                            ThemeMode.SYSTEM -> "System"
+                                            ThemeMode.LIGHT -> stringResource(R.string.theme_light)
+                                            ThemeMode.DARK -> stringResource(R.string.theme_dark)
+                                            ThemeMode.SYSTEM -> stringResource(R.string.theme_system)
                                         }
                                     )
                                 },
@@ -100,42 +102,42 @@ fun SettingsScreen(
                         }
                     }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-                    SwitchSetting("Dynamic colors", "Use Material You dynamic colors (Android 12+)", settings.useDynamicColors) { viewModel.updateUseDynamicColors(it) }
+                    SwitchSetting(stringResource(R.string.dynamic_colors), stringResource(R.string.dynamic_colors_desc), settings.useDynamicColors) { viewModel.updateUseDynamicColors(it) }
                 }
 
-                SettingsGroup("Privacy", Icons.Filled.PrivacyTip) {
-                    SwitchSetting("Incognito mode", "Don't save download history", settings.incognitoMode) { viewModel.updateIncognitoMode(it) }
+                SettingsGroup(stringResource(R.string.settings_privacy), Icons.Filled.PrivacyTip) {
+                    SwitchSetting(stringResource(R.string.incognito_mode), stringResource(R.string.incognito_desc), settings.incognitoMode) { viewModel.updateIncognitoMode(it) }
                 }
 
-                SettingsGroup("Organization", Icons.Filled.Folder) {
-                    SwitchSetting("Organize by platform", "Save files in platform-specific folders", settings.organizeByPlatform) { viewModel.updateOrganizeByPlatform(it) }
+                SettingsGroup(stringResource(R.string.settings_organization), Icons.Filled.Folder) {
+                    SwitchSetting(stringResource(R.string.organize_by_platform), stringResource(R.string.organize_by_platform_desc), settings.organizeByPlatform) { viewModel.updateOrganizeByPlatform(it) }
                 }
 
-                SettingsGroup("Notifications", Icons.Filled.Notifications) {
-                    SwitchSetting("Show progress", "Show download progress in notifications", settings.notificationProgress) { viewModel.updateNotificationProgress(it) }
+                SettingsGroup(stringResource(R.string.settings_notifications), Icons.Filled.Notifications) {
+                    SwitchSetting(stringResource(R.string.show_progress), stringResource(R.string.show_progress_desc), settings.notificationProgress) { viewModel.updateNotificationProgress(it) }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
-                    SwitchSetting("Completion alerts", "Show notification when download completes", settings.completedNotification) { viewModel.updateCompletedNotification(it) }
+                    SwitchSetting(stringResource(R.string.completion_alerts), stringResource(R.string.completion_alerts_desc), settings.completedNotification) { viewModel.updateCompletedNotification(it) }
                 }
 
-                SettingsGroup("Clipboard", Icons.Filled.ContentPaste) {
-                    SwitchSetting("Auto-detect URLs", "Automatically check clipboard for URLs", settings.autoExtractClipboard) { viewModel.updateAutoExtractClipboard(it) }
+                SettingsGroup(stringResource(R.string.settings_clipboard), Icons.Filled.ContentPaste) {
+                    SwitchSetting(stringResource(R.string.auto_detect_urls), stringResource(R.string.auto_detect_urls_desc), settings.autoExtractClipboard) { viewModel.updateAutoExtractClipboard(it) }
                 }
 
-                SettingsGroup("Language", Icons.Filled.Language) {
+                SettingsGroup(stringResource(R.string.settings_language), Icons.Filled.Language) {
                     Text(
-                        "Language",
+                        stringResource(R.string.settings_language),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Medium
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     val languageOptions = listOf(
-                        Language.SYSTEM to "System default",
-                        Language.ENGLISH to "English",
-                        Language.SPANISH to "Español",
-                        Language.FRENCH to "Français",
-                        Language.GERMAN to "Deutsch",
-                        Language.ITALIAN to "Italiano",
-                        Language.PORTUGUESE to "Português"
+                        Language.SYSTEM to stringResource(R.string.language_system_default),
+                        Language.ENGLISH to stringResource(R.string.language_english),
+                        Language.SPANISH to stringResource(R.string.language_spanish),
+                        Language.FRENCH to stringResource(R.string.language_french),
+                        Language.GERMAN to stringResource(R.string.language_german),
+                        Language.ITALIAN to stringResource(R.string.language_italian),
+                        Language.PORTUGUESE to stringResource(R.string.language_portuguese)
                     )
                     @OptIn(ExperimentalLayoutApi::class)
                     FlowRow(
@@ -179,7 +181,7 @@ fun SettingsScreen(
                             }
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
-                                "Legal Disclaimer",
+                                stringResource(R.string.disclaimer_title),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.error
@@ -187,9 +189,7 @@ fun SettingsScreen(
                         }
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            "AetherDown is a general-purpose download tool. Users are solely responsible for ensuring they have the legal right to download and use any content accessed through this application.\n\n" +
-                            "The developers do not condone piracy, copyright infringement, or any illegal use of this software. This application does not host, store, or distribute any copyrighted content.\n\n" +
-                            "Downloading copyrighted material without permission may violate applicable laws in your jurisdiction. Use at your own risk.",
+                            stringResource(R.string.disclaimer_message),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onErrorContainer.copy(alpha = 0.9f)
                         )
@@ -199,7 +199,7 @@ fun SettingsScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    "AetherDown v2.0.0",
+                    stringResource(R.string.app_version),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                     modifier = Modifier.align(Alignment.CenterHorizontally)

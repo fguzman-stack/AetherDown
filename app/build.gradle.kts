@@ -106,6 +106,8 @@ dependencies {
   implementation(libs.coil.compose)
 
   implementation(libs.youtubedl.android.library)
+  implementation(libs.youtubedl.android.ffmpeg)
+  implementation(libs.youtubedl.android.aria2c)
   implementation(libs.androidx.media3.transformer)
   implementation(libs.androidx.media3.common)
   implementation(libs.timber)

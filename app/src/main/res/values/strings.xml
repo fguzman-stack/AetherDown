@@ -148,4 +148,26 @@ Downloading copyrighted material without permission may violate applicable laws 
     <string name="unit_hours">h</string>
     <string name="unit_minutes">m</string>
     <string name="unit_seconds">s</string>
+    <string name="smart_mode_welcome">Welcome to AetherDown!</string>
+    <string name="smart_mode_enable_question">Enable Smart Mode for AI-powered features?</string>
+    <string name="smart_mode_title">Smart Mode</string>
+    <string name="smart_mode_enabled_desc">AI features enabled</string>
+    <string name="smart_mode_disabled_desc">Standard download mode</string>
+    <string name="smart_mode_choose_features">Choose which features to activate:</string>
+    <string name="smart_mode_activate">Activate Smart Mode</string>
+    <string name="smart_mode_continue_standard">Continue without Smart Mode</string>
+    <string name="smart_feature_classify">Smart Classification</string>
+    <string name="smart_feature_classify_desc">Auto-detect video, music, document from URL</string>
+    <string name="smart_feature_naming">Smart Naming</string>
+    <string name="smart_feature_naming_desc">Generate descriptive filenames from content</string>
+    <string name="smart_feature_transcribe">Transcription</string>
+    <string name="smart_feature_transcribe_desc">Transcribe audio/video to text after download</string>
+    <string name="smart_feature_dedup">Duplicate Detection</string>
+    <string name="smart_feature_dedup_desc">Skip downloads already in your library</string>
+    <string name="smart_feature_organize">Auto Organize</string>
+    <string name="smart_feature_organize_desc">Sort downloads into folders by content type</string>
+    <string name="smart_feature_summarize">Summarization</string>
+    <string name="smart_feature_summarize_desc">Get key points without watching the full video</string>
+    <string name="smart_feature_search">Semantic Search</string>
+    <string name="smart_feature_search_desc">Search your library by description, not just filename</string>
 </resources>

@@ -18,7 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.aetherdown.app.R
 import com.aetherdown.app.data.local.entity.DownloadEntity
 import com.aetherdown.app.data.local.entity.DownloadStatus
 import com.aetherdown.app.ui.theme.DownloadBlue
@@ -40,7 +42,7 @@ fun QueueScreen(
             TopAppBar(
                 title = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Queue", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.nav_queue), fontWeight = FontWeight.Bold)
                         if (state.activeCount > 0) {
                             Spacer(modifier = Modifier.width(10.dp))
                             Surface(
@@ -48,7 +50,7 @@ fun QueueScreen(
                                 color = MaterialTheme.colorScheme.primaryContainer
                             ) {
                                 Text(
-                                    "${state.activeCount} active",
+                                    "${state.activeCount} ${stringResource(R.string.pending).lowercase()}",
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.primary,
@@ -97,13 +99,13 @@ fun QueueScreen(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        "No downloads yet",
+                        stringResource(R.string.no_downloads),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        "Paste a URL on the Home tab to start",
+                        stringResource(R.string.no_downloads_hint),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                     )
@@ -163,13 +165,13 @@ private fun DownloadItem(
     }
 
     val statusText = when (download.status) {
-        DownloadStatus.DOWNLOADING -> "Downloading"
-        DownloadStatus.COMPLETED -> "Completed"
-        DownloadStatus.FAILED -> "Failed"
-        DownloadStatus.PAUSED -> "Paused"
-        DownloadStatus.PENDING -> "Pending"
-        DownloadStatus.QUEUED -> "Queued"
-        DownloadStatus.VERIFYING -> "Verifying"
+        DownloadStatus.DOWNLOADING -> stringResource(R.string.downloading)
+        DownloadStatus.COMPLETED -> stringResource(R.string.completed)
+        DownloadStatus.FAILED -> stringResource(R.string.failed)
+        DownloadStatus.PAUSED -> stringResource(R.string.paused)
+        DownloadStatus.PENDING -> stringResource(R.string.pending)
+        DownloadStatus.QUEUED -> stringResource(R.string.queued)
+        DownloadStatus.VERIFYING -> stringResource(R.string.verifying)
     }
 
     Card(
@@ -286,25 +288,25 @@ private fun DownloadItem(
             ) {
                 when (download.status) {
                     DownloadStatus.DOWNLOADING -> {
-                        SmallActionButton(Icons.Filled.Pause, "Pause", DownloadOrange, onPause)
+                        SmallActionButton(Icons.Filled.Pause, stringResource(R.string.pause), DownloadOrange, onPause)
                         Spacer(modifier = Modifier.width(8.dp))
-                        SmallActionButton(Icons.Filled.Close, "Cancel", DownloadRed, onCancel)
+                        SmallActionButton(Icons.Filled.Close, stringResource(R.string.cancel), DownloadRed, onCancel)
                     }
                     DownloadStatus.PAUSED -> {
-                        SmallActionButton(Icons.Filled.PlayArrow, "Resume", DownloadGreen, onResume)
+                        SmallActionButton(Icons.Filled.PlayArrow, stringResource(R.string.resume), DownloadGreen, onResume)
                         Spacer(modifier = Modifier.width(8.dp))
-                        SmallActionButton(Icons.Filled.Close, "Cancel", DownloadRed, onCancel)
+                        SmallActionButton(Icons.Filled.Close, stringResource(R.string.cancel), DownloadRed, onCancel)
                     }
                     DownloadStatus.COMPLETED -> {
-                        SmallActionButton(Icons.Filled.Delete, "Delete", MaterialTheme.colorScheme.onSurfaceVariant, onDelete)
+                        SmallActionButton(Icons.Filled.Delete, stringResource(R.string.delete), MaterialTheme.colorScheme.onSurfaceVariant, onDelete)
                     }
                     DownloadStatus.FAILED -> {
-                        SmallActionButton(Icons.Filled.Refresh, "Retry", DownloadBlue, onResume)
+                        SmallActionButton(Icons.Filled.Refresh, stringResource(R.string.retry), DownloadBlue, onResume)
                         Spacer(modifier = Modifier.width(8.dp))
-                        SmallActionButton(Icons.Filled.Delete, "Delete", DownloadRed, onDelete)
+                        SmallActionButton(Icons.Filled.Delete, stringResource(R.string.delete), DownloadRed, onDelete)
                     }
                     else -> {
-                        SmallActionButton(Icons.Filled.Close, "Cancel", DownloadRed, onCancel)
+                        SmallActionButton(Icons.Filled.Close, stringResource(R.string.cancel), DownloadRed, onCancel)
                     }
                 }
                 if (download.platform.isNotEmpty()) {

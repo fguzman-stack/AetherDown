@@ -18,61 +18,64 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.aetherdown.app.R
 import kotlinx.coroutines.delay
 
 private data class SmartFeature(
     val id: String,
-    val title: String,
-    val description: String,
+    val titleRes: Int,
+    val descRes: Int,
     val icon: ImageVector,
     var enabled: Boolean = true
 )
 
-private val smartFeatures = listOf(
+@Composable
+private fun getSmartFeatures() = listOf(
     SmartFeature(
         "auto_classify",
-        "Smart Classification",
-        "Auto-detect video, music, document from URL",
+        R.string.smart_feature_classify,
+        R.string.smart_feature_classify_desc,
         Icons.Filled.TravelExplore
     ),
     SmartFeature(
         "auto_name",
-        "Smart Naming",
-        "Generate descriptive filenames from content",
+        R.string.smart_feature_naming,
+        R.string.smart_feature_naming_desc,
         Icons.Filled.AutoAwesome
     ),
     SmartFeature(
         "transcribe",
-        "Transcription",
-        "Transcribe audio/video to text after download",
+        R.string.smart_feature_transcribe,
+        R.string.smart_feature_transcribe_desc,
         Icons.Filled.ClosedCaption
     ),
     SmartFeature(
         "dedup",
-        "Duplicate Detection",
-        "Skip downloads already in your library",
+        R.string.smart_feature_dedup,
+        R.string.smart_feature_dedup_desc,
         Icons.Filled.CompareArrows
     ),
     SmartFeature(
         "auto_organize",
-        "Auto Organize",
-        "Sort downloads into folders by content type",
+        R.string.smart_feature_organize,
+        R.string.smart_feature_organize_desc,
         Icons.Filled.FolderSpecial
     ),
     SmartFeature(
         "summarize",
-        "Summarization",
-        "Get key points without watching the full video",
+        R.string.smart_feature_summarize,
+        R.string.smart_feature_summarize_desc,
         Icons.Filled.Article
     ),
     SmartFeature(
         "semantic_search",
-        "Semantic Search",
-        "Search your library by description, not just filename",
+        R.string.smart_feature_search,
+        R.string.smart_feature_search_desc,
         Icons.Filled.Search
     )
 )
@@ -81,10 +84,11 @@ private val smartFeatures = listOf(
 fun SmartModeDialog(
     onDismiss: () -> Unit
 ) {
+    val features = getSmartFeatures()
     var animProgress by remember { mutableStateOf(0f) }
     var smartEnabled by remember { mutableStateOf(true) }
     var featureToggles by remember {
-        mutableStateOf(smartFeatures.associate { it.id to it.enabled })
+        mutableStateOf(features.associate { it.id to it.enabled })
     }
     var dismissed by remember { mutableStateOf(false) }
 
@@ -142,7 +146,7 @@ fun SmartModeDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    "Welcome to AetherDown!",
+                    stringResource(R.string.smart_mode_welcome),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
@@ -151,7 +155,7 @@ fun SmartModeDialog(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    "Enable Smart Mode for AI-powered features?",
+                    stringResource(R.string.smart_mode_enable_question),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -177,12 +181,12 @@ fun SmartModeDialog(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            "Smart Mode",
+                            stringResource(R.string.smart_mode_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold
                         )
                         Text(
-                            if (smartEnabled) "AI features enabled" else "Standard download mode",
+                            if (smartEnabled) stringResource(R.string.smart_mode_enabled_desc) else stringResource(R.string.smart_mode_disabled_desc),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -198,7 +202,7 @@ fun SmartModeDialog(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        "Choose which features to activate:",
+                        stringResource(R.string.smart_mode_choose_features),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier
@@ -206,7 +210,7 @@ fun SmartModeDialog(
                             .padding(vertical = 4.dp)
                     )
 
-                    smartFeatures.forEach { feature ->
+                    features.forEach { feature ->
                         val isChecked = featureToggles[feature.id] ?: true
                         Row(
                             modifier = Modifier
@@ -229,12 +233,12 @@ fun SmartModeDialog(
                             Spacer(modifier = Modifier.width(12.dp))
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    feature.title,
+                                    stringResource(feature.titleRes),
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.Medium
                                 )
                                 Text(
-                                    feature.description,
+                                    stringResource(feature.descRes),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                                 )
@@ -265,7 +269,7 @@ fun SmartModeDialog(
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(
-                        if (smartEnabled) "Activate Smart Mode" else "Continue without Smart Mode",
+                        if (smartEnabled) stringResource(R.string.smart_mode_activate) else stringResource(R.string.smart_mode_continue_standard),
                         fontWeight = FontWeight.SemiBold
                     )
                 }
