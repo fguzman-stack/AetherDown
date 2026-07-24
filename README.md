@@ -61,8 +61,6 @@ También puedes ver todas las versiones en la [página de Releases](https://gith
 
 ---
 
-
-
 ## 🚀 Getting Started
 
 ### Prerequisites
