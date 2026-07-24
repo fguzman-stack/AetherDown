@@ -15,7 +15,7 @@
     <string name="download">Download</string>
     <string name="extracting">Extracting…</string>
     <string name="supported_platforms">Supported Platforms</string>
-    <string name="url_hint">Enter any video, music, or torrent URL to start downloading</string>
+    <string name="url_hint">Enter any video, music, or torrent URL to start downloading (direct browser videos supported)</string>
     <string name="clipboard_detected">URL detected in clipboard</string>
     <string name="dismiss">Dismiss</string>
     <string name="url_label">URL</string>

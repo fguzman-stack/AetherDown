@@ -164,6 +164,8 @@ class SimpleDownloader @Inject constructor(
         ytdlpRequest.addOption("--no-part")
         ytdlpRequest.addOption("--no-update")
         ytdlpRequest.addOption("--no-warnings")
+        ytdlpRequest.addOption("--no-check-certificate")
+        ytdlpRequest.addOption("--geo-bypass")
         ytdlpRequest.addOption("--downloader", "libaria2c.so")
         ytdlpRequest.addOption("--restrict-filenames")
         ytdlpRequest.addOption("--retries", "3")
@@ -177,10 +179,15 @@ class SimpleDownloader @Inject constructor(
                 pageUrl.contains("facebook.com") || pageUrl.contains("fb.watch") -> "https://www.facebook.com/"
                 else -> pageUrl
             }
-            ytdlpRequest.addOption("--add-header", "Referer:$referer")
-            ytdlpRequest.addOption("--add-header", "User-Agent:$BROWSER_UA")
+            ytdlpRequest.addOption("--referer", referer)
+            ytdlpRequest.addOption("--user-agent", BROWSER_UA)
             ytdlpRequest.addOption("--add-header", "Accept-Language:en-US,en;q=0.9")
-            ytdlpRequest.addOption("--extractor-args", "instagram:allow_vp9=True")
+            if (pageUrl.contains("instagram.com") || pageUrl.contains("instagr.am")) {
+                ytdlpRequest.addOption("--extractor-args", "instagram:allow_vp9=True")
+            }
+            if (pageUrl.contains("twitter.com") || pageUrl.contains("x.com")) {
+                ytdlpRequest.addOption("--extractor-args", "twitter:api=syndication")
+            }
         }
 
         Timber.d("yt-dlp execute: $pageUrl format=${request.formatId}")

@@ -62,7 +62,9 @@ private val platforms = listOf(
     PlatformLogo("Facebook", R.drawable.ic_facebook, Color(0xFF1877F2)),
     PlatformLogo("Twitch", R.drawable.ic_twitch, Color(0xFF9146FF)),
     PlatformLogo("Vimeo", R.drawable.ic_vimeo, Color(0xFF1AB7EA)),
-    PlatformLogo("Dailymotion", R.drawable.ic_dailymotion, Color(0xFF00D2F3))
+    PlatformLogo("Dailymotion", R.drawable.ic_dailymotion, Color(0xFF00D2F3)),
+    PlatformLogo("Direct Video", R.drawable.ic_dailymotion, Color(0xFF00B8D4)),
+    PlatformLogo("Web Video", R.drawable.ic_reddit, Color(0xFF7C4DFF))
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
