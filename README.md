@@ -11,13 +11,13 @@
 
 ## 📥 Download
 
-[![Download APK](https://img.shields.io/badge/📥_Descargar_APK-v2.0.0-blue?style=for-the-badge&logo=android)](https://github.com/fguzman-stack/AetherDown/releases/download/v2.0.0/app-release.apk)
+[![Download APK](https://img.shields.io/badge/📥_Download_APK-v2.0.0-blue?style=for-the-badge&logo=android)](https://github.com/fguzman-stack/AetherDown/releases/download/v2.0.0/app-release.apk)
 
-Haz clic en el botón de arriba para descargar la última versión del APK directamente.
+Click the button above to download the latest APK directly.
 
-También puedes ver todas las versiones en la [página de Releases](https://github.com/fguzman-stack/AetherDown/releases).
+You can also find all versions on the [Releases page](https://github.com/fguzman-stack/AetherDown/releases).
 
-**Requisitos:** Android 8.0 (API 26) o superior.
+**Requirements:** Android 8.0 (API 26) or higher.
 
 ---
 
