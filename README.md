@@ -1,9 +1,9 @@
 # 🌌 AetherDown
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/Franeldramatico/AetherDown)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/fguzman-stack/AetherDown)
 [![Platform](https://img.shields.io/badge/platform-Android-green.svg)](https://developer.android.com)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
-[![Download APK](https://img.shields.io/badge/Download-APK-brightgreen.svg)](https://github.com/Franeldramatico/AetherDown/releases/download/v2.0.0/app-release.apk)
+[![Download APK](https://img.shields.io/badge/Download-APK-brightgreen.svg)](https://github.com/fguzman-stack/AetherDown/releases/download/v2.0.0/app-release.apk)
 
 **AetherDown** is a powerful, open-source universal multimedia downloader for Android. Built with a focus on speed, versatility, and a clean user experience, it allows you to download content from almost any corner of the web.
 
@@ -11,11 +11,11 @@
 
 ## 📥 Download
 
-[![Download APK](https://img.shields.io/badge/📥_Descargar_APK-v2.0.0-blue?style=for-the-badge&logo=android)](https://github.com/Franeldramatico/AetherDown/releases/download/v2.0.0/app-release.apk)
+[![Download APK](https://img.shields.io/badge/📥_Descargar_APK-v2.0.0-blue?style=for-the-badge&logo=android)](https://github.com/fguzman-stack/AetherDown/releases/download/v2.0.0/app-release.apk)
 
 Haz clic en el botón de arriba para descargar la última versión del APK directamente.
 
-También puedes ver todas las versiones en la [página de Releases](https://github.com/Franeldramatico/AetherDown/releases).
+También puedes ver todas las versiones en la [página de Releases](https://github.com/fguzman-stack/AetherDown/releases).
 
 **Requisitos:** Android 8.0 (API 26) o superior.
 
@@ -93,4 +93,4 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ---
 
-Developed with ❤️ by [FGuz20](https://github.com/Franeldramatico)
+Developed with ❤️ by [FGuz20](https://github.com/fguzman-stack)
