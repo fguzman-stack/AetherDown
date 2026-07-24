@@ -30,6 +30,10 @@
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 
+# Fix R8 missing classes for Jackson/youtubedl-android
+-dontwarn java.beans.**
+-dontwarn org.w3c.dom.bootstrap.**
+
 # Remove logging in release
 -assumenosideeffects class android.util.Log {
     public static boolean isLoggable(java.lang.String, int);
