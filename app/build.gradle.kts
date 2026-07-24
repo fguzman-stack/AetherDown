@@ -32,10 +32,19 @@ android {
   signingConfigs {
     create("release") {
       val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
-      storeFile = file(keystorePath)
-      storePassword = System.getenv("STORE_PASSWORD")
-      keyAlias = "upload"
-      keyPassword = System.getenv("KEY_PASSWORD")
+      val keystoreFile = file(keystorePath)
+      if (keystoreFile.exists()) {
+        storeFile = keystoreFile
+        storePassword = System.getenv("STORE_PASSWORD") ?: ""
+        keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
+        keyPassword = System.getenv("KEY_PASSWORD") ?: ""
+      } else {
+        val debugConfig = signingConfigs.getByName("debug")
+        storeFile = debugConfig.storeFile
+        storePassword = debugConfig.storePassword
+        keyAlias = debugConfig.keyAlias
+        keyPassword = debugConfig.keyPassword
+      }
     }
   }
 
@@ -60,6 +69,12 @@ android {
 
   kotlinOptions {
     jvmTarget = "17"
+  }
+
+  packaging {
+    jniLibs {
+      useLegacyPackaging = true
+    }
   }
 
   buildFeatures {

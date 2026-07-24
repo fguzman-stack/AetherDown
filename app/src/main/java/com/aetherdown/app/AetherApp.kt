@@ -29,7 +29,7 @@ class AetherApp : Application() {
             FFmpeg.getInstance().init(this)
             Aria2c.getInstance().init(this)
             Timber.d("youtubedl-android, ffmpeg and aria2c initialized successfully")
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Timber.e(e, "Failed to initialize youtubedl-android components")
         }
     }
@@ -39,7 +39,7 @@ class AetherApp : Application() {
             try {
                 val status = YoutubeDL.getInstance().updateYoutubeDL(this@AetherApp, YoutubeDL.UpdateChannel.STABLE)
                 Timber.d("yt-dlp update status: $status")
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 Timber.e(e, "Failed to update yt-dlp")
             }
         }

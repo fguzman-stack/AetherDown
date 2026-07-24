@@ -20,19 +20,28 @@
 -keep class com.aetherdown.app.** { @com.squareup.moshi.JsonClass *; }
 -keep class com.squareup.moshi.** { *; }
 
-# Keep OkHttp
+# Keep attributes for reflection, annotations, and generics
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod,SourceFile,LineNumberTable
+
+# Keep Retrofit & OkHttp
 -dontwarn okhttp3.**
 -dontwarn okio.**
-
-# Keep Retrofit
--keepattributes Signature
--keepattributes *Annotation*
 -keep class retrofit2.** { *; }
 
-# Keep youtubedl-android (yt-dlp for Android) - uses Jackson reflection
+# Keep youtubedl-android, FFmpeg & Aria2c
 -dontwarn com.yausername.youtubedl_android.**
+-dontwarn com.yausername.ffmpeg.**
+-dontwarn com.yausername.aria2c.**
 -keep class com.yausername.youtubedl_android.** { *; }
--keep class com.fasterxml.** { *; }
+-keep class com.yausername.ffmpeg.** { *; }
+-keep class com.yausername.aria2c.** { *; }
+
+# Keep Jackson & Reflection mapping
+-keep class com.fasterxml.jackson.** { *; }
+-dontwarn com.fasterxml.jackson.**
+-keepclassmembers class * {
+    @com.fasterxml.jackson.annotation.* *;
+}
 
 # Keep Coroutines
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}

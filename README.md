@@ -3,7 +3,8 @@
 [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/fguzman-stack/AetherDown)
 [![Platform](https://img.shields.io/badge/platform-Android-green.svg)](https://developer.android.com)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
-[![Download APK](https://img.shields.io/badge/Download-APK-brightgreen.svg)](https://github.com/fguzman-stack/AetherDown/releases/download/v2.0.0/app-release.apk)
+[![Download APK](https://img.shields.io/badge/Download-APK-brightgreen.svg)](https://github.com/fguzman-stack/AetherDown/releases)
+[![Donate PayPal](https://img.shields.io/badge/Donate-PayPal-00457C.svg?logo=paypal&logoColor=white)](https://paypal.me/FranciscoGuz06)
 
 **AetherDown** is a powerful, open-source universal multimedia downloader for Android. Built with a focus on speed, versatility, and a clean user experience, it allows you to download content from almost any corner of the web.
 
@@ -11,11 +12,12 @@
 
 ## 📥 Download
 
-[![Download APK](https://img.shields.io/badge/📥_Download_APK-v2.0.0-blue?style=for-the-badge&logo=android)](https://github.com/fguzman-stack/AetherDown/releases/download/v2.0.0/app-release.apk)
+[![Download APK](https://img.shields.io/badge/📥_Download_APK-v2.0.0-blue?style=for-the-badge&logo=android)](https://github.com/fguzman-stack/AetherDown/releases)
 
-Click the button above to download the latest APK directly.
+Visit the [Releases page](https://github.com/fguzman-stack/AetherDown/releases) to download the latest APK release.
 
-You can also find all versions on the [Releases page](https://github.com/fguzman-stack/AetherDown/releases).
+> [!NOTE]
+> Para repositorios privados, descarga la APK estando autenticado en GitHub desde la sección de **[Releases](https://github.com/fguzman-stack/AetherDown/releases)** o compila el proyecto localmente con `./gradlew assembleRelease`.
 
 **Requirements:** Android 8.0 (API 26) or higher.
 
@@ -72,6 +74,16 @@ You can also find all versions on the [Releases page](https://github.com/fguzman
 2. Open **AetherDown** (it might even detect the link automatically!).
 3. Choose your preferred quality and format.
 4. Hit download and enjoy your media!
+
+---
+
+## ☕ Support & Buy Me a Coffee
+
+If you find **AetherDown** useful and want to support its ongoing development, feel free to buy me a coffee! Your support helps keep the project updated with the latest extractor fixes, new features, and improvements.
+
+[![Donate via PayPal](https://img.shields.io/badge/☕_Buy_me_a_coffee_via_PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://paypal.me/FranciscoGuz06)
+
+💖 **PayPal Link:** [paypal.me/FranciscoGuz06](https://paypal.me/FranciscoGuz06)
 
 ---
 
